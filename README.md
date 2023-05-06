@@ -33,7 +33,7 @@ That's why I published this as a standalone repo. Nevertheless, some parts of th
 
 ## Development
 
-### 1. Clone the repo or download the ZIP
+### 1. Clone the repo
 
 ```
 git clone
@@ -64,7 +64,7 @@ MONGODB_URI=
 - Visit [Pinecone](https://pinecone.io/) to create and retrieve your API keys, and also retrieve your environment and index name from the dashboard.
 - Visit [MongoDB](https://mongodb.com/), create a database (free one is enough for these purposes) and retrieve your URI in Connect -> Drivers
 
-5. In `utils/makechain.ts` chain change the `QA_PROMPT` for your own usecase. Change `modelName` in `new OpenAI` to `gpt-4`, if you have access to `gpt-4` api. Please verify outside this repo that you have access to `gpt-4` api, otherwise the application will not work.
+5. In `utils/makechain.ts`, adjust the `QA_PROMPT` for your own usecase. Change `modelName` in `new OpenAI` to `gpt-4`, if you have access to `gpt-4` api.
 
 ## Run the app
 
