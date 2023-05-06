@@ -33,7 +33,7 @@ That's why I published this as a standalone repo. Nevertheless, some parts of th
 
 ## Development
 
-### 1. Clone the repo or download the ZIP
+### 1. Clone the repo
 
 ```
 git clone
