@@ -175,7 +175,11 @@ export default function Home({ initialNamespace }: HomeProps) {
 
   return (
     <>
-      <div className="flex bg-gray-900 pb-40">
+      <div
+        className={`flex bg-gray-900 pb-40 ${
+          !nameSpaceHasChats ? 'h-screen' : ''
+        }`}
+      >
         <div className="fixed top-0 left-0 w-1/6 h-screen flex flex-col gap-y-5 overflow-y-auto bg-gray-800 px-6">
           <div className="flex h-16 shrink-0 items-center"></div>
 
@@ -219,7 +223,7 @@ export default function Home({ initialNamespace }: HomeProps) {
 
                 <div
                   className={`flex flex-col items-stretch ${
-                    messages.length > 0 ? 'flex-grow' : ''
+                    messages.length > 0 ? 'flex-grow' : 'bg-red-400'
                   }`}
                 >
                   <MessageList
@@ -254,7 +258,7 @@ export default function Home({ initialNamespace }: HomeProps) {
                 </p>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full">
+              <div className="flex flex-col items-center justify-center h-screen ">
                 <h1 className="text-5xl font-bold text-gray-100">Welcome</h1>
                 <p className="text-2xl text-gray-100 mt-4">
                   Get started by creating a chat for this topic in the sidebar.
