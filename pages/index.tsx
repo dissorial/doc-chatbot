@@ -33,7 +33,6 @@ export default function Home({ initialNamespace }: HomeProps) {
     updateChatName,
   } = useChats(selectedNamespace);
 
-  console.log(selectedChatId);
   const nameSpaceHasChats = chatList.length > 0;
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -55,6 +54,8 @@ export default function Home({ initialNamespace }: HomeProps) {
 
   const { messages, history } = messageState;
 
+  // console.log(chatList);
+
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -73,6 +74,12 @@ export default function Home({ initialNamespace }: HomeProps) {
       console.error('Failed to fetch chat history:', error);
     }
   }, [chatId]);
+
+  useEffect(() => {
+    if (!selectedNamespace && namespaces.length > 0) {
+      setSelectedNamespace(namespaces[0]);
+    }
+  }, [namespaces, selectedNamespace, setSelectedNamespace]);
 
   useEffect(() => {
     if (selectedChatId) {
@@ -223,7 +230,7 @@ export default function Home({ initialNamespace }: HomeProps) {
 
                 <div
                   className={`flex flex-col items-stretch ${
-                    messages.length > 0 ? 'flex-grow' : 'bg-red-400'
+                    messages.length > 0 ? 'flex-grow' : ''
                   }`}
                 >
                   <MessageList
