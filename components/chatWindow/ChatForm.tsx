@@ -39,12 +39,12 @@ const ChatForm = ({
             }
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 border bg-gray-900 border-gray-800 rounded-md p-4 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent resize-none h-[100px]"
+            className="flex-1 border bg-gray-800 shadow-xl border-gray-500 rounded-md p-4 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent resize-none h-[80px]"
           />
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-900 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent"
+            className="bg-teal-900 shadow-xl border hover:bg-teal-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-teal-900 focus:border-transparent"
           >
             {loading ? (
               <div>

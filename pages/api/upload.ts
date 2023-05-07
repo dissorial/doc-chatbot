@@ -1,5 +1,6 @@
 import multiparty from 'multiparty';
 import fs from 'fs';
+import path from 'path';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 interface UploadedFile {
@@ -39,7 +40,11 @@ export default async function handler(
 
       const uploadedFile = file[0] as UploadedFile;
       const oldPath = uploadedFile.path;
-      const newPath = `${process.cwd()}/docs/${uploadedFile.originalFilename}`;
+      const newPath = path.join(
+        process.cwd(),
+        'docs',
+        uploadedFile.originalFilename,
+      );
 
       fs.renameSync(oldPath, newPath);
       uploadedFiles.push(uploadedFile.originalFilename);

@@ -175,8 +175,8 @@ export default function Home({ initialNamespace }: HomeProps) {
 
   return (
     <>
-      <div className="flex bg-gray-900">
-        <div className="flex w-1/6 grow h-screen flex-col gap-y-5 overflow-y-auto bg-gray-800 px-6">
+      <div className="flex bg-gray-900 pb-40">
+        <div className="fixed top-0 left-0 w-1/6 h-screen flex flex-col gap-y-5 overflow-y-auto bg-gray-800 px-6">
           <div className="flex h-16 shrink-0 items-center"></div>
 
           <nav className="flex flex-1 flex-col">
@@ -206,7 +206,7 @@ export default function Home({ initialNamespace }: HomeProps) {
             Settings
           </button>
         </div>
-        <main className="py-10 w-full h-screen">
+        <main className="py-10 w-full h-full pl-72">
           <div className="px-4 sm:px-6 lg:px-8 h-full flex flex-col">
             {nameSpaceHasChats ? (
               <>
@@ -217,21 +217,32 @@ export default function Home({ initialNamespace }: HomeProps) {
                   {chatNames[selectedChatId] || 'Untitled Chat'}
                 </h2>
 
-                <MessageList
-                  messages={messages}
-                  loading={loading}
-                  messageListRef={messageListRef}
-                />
+                <div
+                  className={`flex flex-col items-stretch ${
+                    messages.length > 0 ? 'flex-grow' : ''
+                  }`}
+                >
+                  <MessageList
+                    messages={messages}
+                    loading={loading}
+                    messageListRef={messageListRef}
+                  />
 
-                <ChatForm
-                  loading={loading}
-                  error={error}
-                  query={query}
-                  textAreaRef={textAreaRef}
-                  handleEnter={handleEnter}
-                  handleSubmit={handleSubmit}
-                  setQuery={setQuery}
-                />
+                  <div className="flex items-center justify-center mx-auto">
+                    <div className="fixed bottom-0 left-1/2 transform -translate-x-1/3 w-3/6 pb-6 pr-6">
+                      <ChatForm
+                        loading={loading}
+                        error={error}
+                        query={query}
+                        textAreaRef={textAreaRef}
+                        handleEnter={handleEnter}
+                        handleSubmit={handleSubmit}
+                        setQuery={setQuery}
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <p className="text-gray-300  text-center font-medium mt-6">
                   Demo built by{' '}
                   <a
