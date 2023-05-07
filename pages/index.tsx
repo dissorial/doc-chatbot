@@ -180,6 +180,7 @@ export default function Home({ initialNamespace }: HomeProps) {
     }
   };
 
+  console.log(messages.length);
   return (
     <>
       <div
@@ -221,12 +222,18 @@ export default function Home({ initialNamespace }: HomeProps) {
           <div className="px-4 sm:px-6 lg:px-8 h-full flex flex-col">
             {nameSpaceHasChats ? (
               <>
-                <h2 className="text-2xl mb-3 text-center text-gray-200 font-bold tracking-wide">
-                  Chat topic{'  '}
-                  <ArrowLongRightIcon className="inline-block h-6 w-6 mx-2 text-gray-200" />
-                  {'  '}
-                  {chatNames[selectedChatId] || 'Untitled Chat'}
-                </h2>
+                {messages.length === 0 ? (
+                  <h2 className="text-2xl mb-3 text-center text-gray-200 font-bold tracking-wide">
+                    Nothing to show here yet
+                  </h2>
+                ) : (
+                  <h2 className="text-2xl mb-3 text-center text-gray-200 font-bold tracking-wide">
+                    Chat topic{'  '}
+                    <ArrowLongRightIcon className="inline-block h-6 w-6 mx-2 text-gray-200" />
+                    {'  '}
+                    {chatNames[selectedChatId] || 'Untitled Chat'}
+                  </h2>
+                )}
 
                 <div
                   className={`flex flex-col items-stretch ${
