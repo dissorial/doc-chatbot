@@ -1,7 +1,17 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+interface Message {
+  message: string;
+  type: string;
+}
 
-function MessageList({ messages, loading, messageListRef }) {
+interface MessageListProps {
+  messages: Message[];
+  loading: boolean;
+  messageListRef: React.RefObject<HTMLDivElement>;
+}
+
+function MessageList({ messages, loading, messageListRef }: MessageListProps) {
   return (
     <div className="flex-grow flex-shrink-0 overflow-y-auto">
       <div ref={messageListRef} className="flex flex-col gap-4 p-4">

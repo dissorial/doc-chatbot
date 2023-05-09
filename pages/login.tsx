@@ -2,8 +2,9 @@ import React from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
-export default function Example() {
+export default function Login() {
   const router = useRouter();
   const { data: session } = useSession();
   return (
@@ -112,8 +113,8 @@ export default function Example() {
             </div>
             <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32">
               <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
-                <img
-                  src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png"
+                <Image
+                  src="/images/pdf-chatbot-screenshot.png"
                   alt="App screenshot"
                   width={2432}
                   height={1442}

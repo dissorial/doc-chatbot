@@ -19,6 +19,22 @@
 
 ---
 
+**Landing page**
+![Landing page](public/images/landing-page.png)
+
+---
+
+**Main chat area**
+![Main chat area](public/images/pdf-chatbot-screenshot.png)
+
+---
+
+**Settings page**
+
+![Settings page](public/images/settings.png)
+
+---
+
 ## Disclaimer
 
 This repository was originally a fork of [GPT-4 & LangChain](https://github.com/mayooear/gpt4-pdf-chatbot-langchain) repository by [mayooear](https://github.com/mayooear/gpt4-pdf-chatbot-langchain). I planned on making small changes to satisfy my needs but ended up:
@@ -31,6 +47,8 @@ This repository was originally a fork of [GPT-4 & LangChain](https://github.com/
 - and more misc changes
 
 That's why I published this as a standalone repo. Nevertheless, some parts of this readme.md are borrowed from there too.
+
+---
 
 ## Local setup
 
@@ -100,13 +118,19 @@ JWT_SECRET=
 
 - In `utils/makechain.ts`, adjust the `QA_PROMPT` for your own usecase. Change `modelName` in `new OpenAI` to `gpt-4`, if you have access to `gpt-4` api.
 
+---
+
 ## Run the app
 
 Run `npm run dev`. Once the local dev environment launches, go to `Settings` in the bottom left corner. Upload your PDF files and give them a 'namespace'. Here, 'namespace' is synonymous with being the topic of your conversation. This way, you can upload multiple files to multiple namespaces, and maintain several conversations about different topics and documents.
 
+---
+
 ## Chatting with PDF files
 
 If you retrun to the home page now, you should see your namespace on the left sidebar. Click on it, create a new chat and have a conversation with the PDF files embedded for that particular namespace.
+
+---
 
 ## Troubleshooting
 
@@ -125,6 +149,8 @@ If you retrun to the home page now, you should see your namespace on the left si
 - Confirm that you've set the vector dimensions to 1536.
 - Note that Pinecone indexes for users on the Starter (free) plan are deleted after 7 days of inactivity. To prevent this, send an API request to Pinecone to reset the counter before 7 days.
 - If issues persist, consider starting fresh with a new Pinecone project, index, and cloned repository.
+
+---
 
 ## Credit
 
