@@ -88,6 +88,7 @@ GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 NEXTAUTH_URL=
 JWT_SECRET=
+ALLOWED_EMAIL_DOMAIN='@example.com'
 ```
 
 #### OpenAI API
@@ -113,6 +114,10 @@ JWT_SECRET=
 #### NextAuth URL
 
 - You can use `http://localhost:3000`
+
+#### Allowed email domain
+
+- Change '@example.com' to '@gmail.com' or other domains. If you want to use any email domain, remove `callback` from options in `pages/api/auth/[...nextauth].ts`
 
 ### Other
 
