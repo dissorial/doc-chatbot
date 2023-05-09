@@ -14,8 +14,14 @@ export default async function handler(
     await connectDB();
 
     try {
-      const { chatId, namespace } = req.body;
-      const newChat = await ChatModelTyped.create({ chatId, namespace });
+      const { chatId, namespace, userEmail } = req.body;
+
+      const newChat = await ChatModelTyped.create({
+        chatId,
+        namespace,
+        userEmail,
+      });
+
       res.status(201).json(newChat);
     } catch (error) {
       res.status(500).json({ error: 'Failed to create new chat' });

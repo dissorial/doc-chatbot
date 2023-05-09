@@ -24,7 +24,7 @@ const ChatForm = ({
   return (
     <div>
       <div className="flex flex-col space-y-4">
-        <form onSubmit={handleSubmit} className="flex space-x-2">
+        <form onSubmit={handleSubmit} className="flex ">
           <textarea
             disabled={loading}
             onKeyDown={handleEnter}
@@ -39,17 +39,15 @@ const ChatForm = ({
             }
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 border bg-gray-800 shadow-xl border-gray-500 rounded-md p-4 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent resize-none h-[80px]"
+            className="flex-1 focus:outline-none bg-gray-800 shadow-xl  p-4 text-gray-100 rounded-xl resize-none h-[80px]"
           />
           <button
             type="submit"
             disabled={loading}
-            className="bg-teal-900 shadow-xl border hover:bg-teal-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-teal-900 focus:border-transparent"
+            className="bg-gray-800  text-white font-bold py-2 px-4 focus:outline-none rounded-r-xl rfocus:border-transparent hover:bg-indigo-800"
           >
             {loading ? (
-              <div>
-                <LoadingDots color="#ffffff" />
-              </div>
+              <LoadingDots color="#ffffff" />
             ) : (
               <PaperAirplaneIcon className="h-6 w-6" />
             )}

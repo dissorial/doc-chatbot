@@ -10,10 +10,11 @@ const connection: Connection = {};
 
 async function connectDB() {
   if (connection.isConnected) {
-    return;
+    return mongoose.connection;
   }
   const db = await mongoose.connect(MONGODB_URI as string);
   connection.isConnected = db.connections[0].readyState;
+  return mongoose.connection;
 }
 
 export default connectDB;

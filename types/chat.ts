@@ -1,4 +1,3 @@
-// types/chat.ts
 import { Document } from 'langchain/document';
 
 export type ChatMessage = {

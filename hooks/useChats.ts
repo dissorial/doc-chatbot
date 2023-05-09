@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
-export function useChats(namespace: string) {
+export function useChats(namespace: string, userEmail: string | undefined) {
   const [chatList, setChatList] = useState<string[]>([]);
   const [chatNames, setChatNames] = useState<{ [key: string]: string }>({});
 
@@ -53,6 +53,7 @@ export function useChats(namespace: string) {
       await axios.post('/api/create-chat', {
         chatId: newChatId,
         namespace,
+        userEmail,
       });
     } catch (error) {
       console.error('Failed to create new chat:', error);
@@ -75,6 +76,7 @@ export function useChats(namespace: string) {
         data: {
           chatId: chatIdToDelete,
           namespace,
+          userEmail,
         },
       });
     } catch (error) {
@@ -96,5 +98,6 @@ export function useChats(namespace: string) {
     deleteChat,
     chatNames,
     updateChatName,
+    userEmail,
   };
 }

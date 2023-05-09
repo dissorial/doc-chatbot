@@ -20,7 +20,9 @@ export const NamespaceList: React.FC<NamespaceListProps> = ({
     <>
       <Menu as="div" className="relative inline-block text-left">
         <div>
-          <h2 className="text-gray-100 mb-4">Your namespaces</h2>
+          <h2 className="text-md font-semibold text-gray-200 leading-6 mb-4">
+            Your namespaces
+          </h2>
           <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-700">
             {selectedNamespace}
             <ChevronDownIcon
@@ -48,7 +50,7 @@ export const NamespaceList: React.FC<NamespaceListProps> = ({
                       className={`block px-4 py-2 text-sm w-full ${
                         namespace === selectedNamespace
                           ? 'bg-gray-800 border-x border-gray-900 text-gray-100'
-                          : 'text-gray-300 hover:text-gray-100'
+                          : 'text-gray-300 hover:text-gray-100 hover:bg-gray-700'
                       }`}
                       onClick={() => setSelectedNamespace(namespace)}
                     >

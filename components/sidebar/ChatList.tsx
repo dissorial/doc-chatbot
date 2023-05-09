@@ -1,4 +1,8 @@
-import { PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/solid';
+import {
+  PencilIcon,
+  TrashIcon,
+  PlusCircleIcon,
+} from '@heroicons/react/20/solid';
 
 interface ChatListProps {
   chatList: string[];
@@ -25,19 +29,18 @@ const ChatList: React.FC<ChatListProps> = (props) => {
 
   return (
     <li>
-      <div className="border p-2 rounded-md flex gap-2 items-center mb-10 bg-gray-800 hover:bg-gray-700">
-        <PlusIcon className="h-6 w-6 text-gray-200" aria-hidden="true" />
-        <button
-          className="w-full text-left transition-colors text-gray-200"
-          onClick={async () => {
-            const newChatId = await createChat();
-            setChatId(newChatId);
-            setSelectedChatId(newChatId);
-          }}
-        >
-          New chat
-        </button>
-      </div>
+      <button
+        type="button"
+        className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-full mb-8"
+        onClick={async () => {
+          const newChatId = await createChat();
+          setChatId(newChatId);
+          setSelectedChatId(newChatId);
+        }}
+      >
+        <PlusCircleIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+        New chat
+      </button>
 
       <ul role="list" className="space-y-1">
         <p className="text-md font-semibold text-gray-200 leading-6">
@@ -48,8 +51,8 @@ const ChatList: React.FC<ChatListProps> = (props) => {
             key={chatId}
             className={`my-2 p-2 rounded-lg cursor-pointer pl-4 flex flex-grow text-left transition-colors ${
               chatId === selectedChatId
-                ? 'bg-gray-700 text-white'
-                : 'bg-none text-gray-200 hover:bg-gray-700'
+                ? 'bg-gray-700 text-white text-sm'
+                : 'bg-none text-gray-200 hover:bg-gray-700 text-sm'
             }`}
             onClick={() => {
               setChatId(chatId);

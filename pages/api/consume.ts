@@ -6,25 +6,33 @@ import { CustomPDFLoader } from '@/utils/customPDFLoader';
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
+import Namespace from '@/models/Namespace';
+import connectDB from '@/utils/mongoConnection';
 
-/* Name of directory to retrieve your files from */
 const filePath = 'docs';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { namespaceName } = req.query;
+  const { namespaceName, userEmail } = req.query;
+
   const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
+
   try {
-    /* Load raw docs from all files in the directory */
+    await connectDB();
+
+    const newNamespace = new Namespace({
+      userEmail: userEmail as string,
+      name: namespaceName as string,
+    });
+    await newNamespace.save();
     const directoryLoader = new DirectoryLoader(filePath, {
       '.pdf': (path) => new CustomPDFLoader(path),
     });
 
     const rawDocs = await directoryLoader.load();
 
-    /* Split text into chunks */
     const textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
       chunkOverlap: 200,
@@ -32,18 +40,15 @@ export default async function handler(
 
     const docs = await textSplitter.splitDocuments(rawDocs);
 
-    /*create and store the embeddings in the vectorStore*/
     const embeddings = new OpenAIEmbeddings();
-    const index = pinecone.Index(PINECONE_INDEX_NAME); //change to your own index name
+    const index = pinecone.Index(PINECONE_INDEX_NAME);
 
-    //embed the PDF documents
     await PineconeStore.fromDocuments(docs, embeddings, {
       pineconeIndex: index,
       namespace: namespaceName as string,
       textKey: 'text',
     });
 
-    /* Remove all PDF files in the directory */
     const pdfFiles = fs
       .readdirSync(filePath)
       .filter((file) => file.endsWith('.pdf'));

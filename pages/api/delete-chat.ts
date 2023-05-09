@@ -13,6 +13,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   const chatId = req.body.chatId as string;
   const namespace = req.body.namespace as string;
+  const userEmail = req.body.userEmail as string;
 
   if (!chatId || !namespace) {
     res.status(400).send('Bad request: chatId and namespace are required');
@@ -22,8 +23,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     await connectDB();
 
-    await Message.deleteMany({ chatId, namespace });
-    await ChatModelTyped.deleteOne({ chatId, namespace });
+    await Message.deleteMany({ chatId, namespace, userEmail });
+    await ChatModelTyped.deleteOne({ chatId, namespace, userEmail });
 
     res.status(200).send('Chat and its messages deleted successfully');
   } catch (error) {

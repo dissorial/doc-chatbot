@@ -10,7 +10,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { question, history, chatId, selectedNamespace } = req.body;
+  const { question, history, chatId, selectedNamespace, userEmail } = req.body;
   const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
 
   if (req.method !== 'POST') {
@@ -43,6 +43,7 @@ export default async function handler(
       content: sanitizedQuestion,
       chatId: chatId,
       namespace: selectedNamespace,
+      userEmail: userEmail,
     });
 
     await userMessage.save();
@@ -60,6 +61,7 @@ export default async function handler(
       content: response.text.toString(),
       chatId: chatId,
       namespace: selectedNamespace,
+      userEmail: userEmail,
     });
 
     await botMessage.save();
