@@ -35,6 +35,7 @@
     "mongoose": "^7.1.0",
     "multiparty": "^4.2.3",
     "next": "13.2.3",
+    "next-auth": "^4.22.1",
     "pdf-parse": "1.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
