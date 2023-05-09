@@ -3,6 +3,7 @@
 ## Features
 
 - Create **multiple** topics to chat about
+- Google OAuth to log in and store chats in MongoDB associated with your email
 - Upload **any number of PDF files** to each topic
 - Create **any number of chats** (chat windows) for each topic
 - Upload files, convert them to embeddings, store the embeddings in a namespace and upload to Pinecone, and delete Pinecone namespaces **from within the browser**
@@ -31,12 +32,18 @@ This repository was originally a fork of [GPT-4 & LangChain](https://github.com/
 
 That's why I published this as a standalone repo. Nevertheless, some parts of this readme.md are borrowed from there too.
 
-## Development
+## Local setup
 
 ### 1. Clone the repo
 
 ```
-git clone
+git clone https://github.com/dissorial/pdf-chatbot.git
+```
+
+This repository has two branches: `master` and `old-master`. The `old-master` branch contains working code that you can run locally and has all the features except for Google OAuth. If you want to avoid setting up Google OAuth, clone that branch with:
+
+```
+$ git clone https://github.com/dissorial/pdf-chatbot.git -b old-master
 ```
 
 ### 2. Install packages
@@ -58,13 +65,40 @@ PINECONE_ENVIRONMENT=
 PINECONE_INDEX_NAME=
 
 MONGODB_URI=
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+NEXTAUTH_URL=
+JWT_SECRET=
 ```
 
-- Visit [OpenAI](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key) to retrieve API keys and insert into your `.env` file.
+#### OpenAI API
+
+- Visit [OpenAI](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key) to retrieve API keys and insert into your `.env` file
+
+#### Pinecone
+
 - Visit [Pinecone](https://pinecone.io/) to create and retrieve your API keys, and also retrieve your environment and index name from the dashboard.
+
+#### MongoDB
+
 - Visit [MongoDB](https://mongodb.com/), create a database (free one is enough for these purposes) and retrieve your URI in Connect -> Drivers
 
-5. In `utils/makechain.ts`, adjust the `QA_PROMPT` for your own usecase. Change `modelName` in `new OpenAI` to `gpt-4`, if you have access to `gpt-4` api.
+#### JWT
+
+- To generate your JWT_SECRET, you can run `openssl rand -base64 32` in terminal
+
+#### Google OAuth (Client ID and secret)
+
+- Read [this guide](https://support.google.com/cloud/answer/6158849?hl=en) from Google
+
+#### NextAuth URL
+
+- You can use `http://localhost:3000`
+
+### Other
+
+- In `utils/makechain.ts`, adjust the `QA_PROMPT` for your own usecase. Change `modelName` in `new OpenAI` to `gpt-4`, if you have access to `gpt-4` api.
 
 ## Run the app
 
