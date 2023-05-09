@@ -9,4 +9,15 @@ export default NextAuth({
     }),
   ],
   secret: process.env.JWT_SECRET ?? '',
+  callbacks: {
+    async signIn({ account, profile }) {
+      if (account?.provider === 'google') {
+        return (
+          profile?.email?.endsWith(process.env.ALLOWED_EMAIL_DOMAIN ?? '') ??
+          false
+        );
+      }
+      return true;
+    },
+  },
 });
