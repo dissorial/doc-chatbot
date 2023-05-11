@@ -22,33 +22,42 @@ export default async function handler(
   try {
     await connectDB();
 
+    // Create a new namespace with the given name and user email
     const newNamespace = new Namespace({
       userEmail: userEmail as string,
       name: namespaceName as string,
     });
     await newNamespace.save();
+
+    // Load PDF files from the specified directory
     const directoryLoader = new DirectoryLoader(filePath, {
       '.pdf': (path) => new CustomPDFLoader(path),
     });
 
     const rawDocs = await directoryLoader.load();
 
+    // Split the PDF documents into smaller chunks
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
+      chunkSize: 1200,
       chunkOverlap: 200,
     });
 
     const docs = await textSplitter.splitDocuments(rawDocs);
 
+    // OpenAI embeddings for the document chunks
     const embeddings = new OpenAIEmbeddings();
+
+    // Get the Pinecone index with the given name
     const index = pinecone.Index(PINECONE_INDEX_NAME);
 
+    // Store the document chunks in Pinecone with their embeddings
     await PineconeStore.fromDocuments(docs, embeddings, {
       pineconeIndex: index,
       namespace: namespaceName as string,
       textKey: 'text',
     });
 
+    // Delete the PDF files
     const pdfFiles = fs
       .readdirSync(filePath)
       .filter((file) => file.endsWith('.pdf'));

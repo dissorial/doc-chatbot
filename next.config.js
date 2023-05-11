@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   webpack(config) {
-    config.experiments = { ...config.experiments, topLevelAwait: true };
+    config.experiments = { ...config.experiments, topLevelAwait: true, asyncWebAssembly: true, layers: true };
     return config;
   },
 };

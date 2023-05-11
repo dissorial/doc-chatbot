@@ -54,8 +54,6 @@ export default async function handler(
       chat_history: history || [],
     });
 
-    console.log('response', response);
-
     const botMessage = new Message({
       sender: 'bot',
       content: response.text.toString(),
