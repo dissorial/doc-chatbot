@@ -9,6 +9,7 @@ export default NextAuth({
     }),
   ],
   secret: process.env.JWT_SECRET ?? '',
+  //remove the code below to allow any email domain to sign in
   callbacks: {
     async signIn({ account, profile }) {
       if (account?.provider === 'google') {
@@ -20,4 +21,5 @@ export default NextAuth({
       return true;
     },
   },
+  // remove the code above to allow any email domain to sign in
 });
