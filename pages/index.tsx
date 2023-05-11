@@ -68,12 +68,23 @@ export default function Home() {
         `/api/history?chatId=${chatId}&userEmail=${userEmail}`,
       );
       const data = await response.json();
+
+      const pairedMessages: [any, any][] = [];
+
+      for (let i = 0; i < data.length; i += 2) {
+        pairedMessages.push([data[i], data[i + 1]]);
+      }
+
       setMessageState((state) => ({
         ...state,
         messages: data.map((message: any) => ({
           type: message.sender === 'user' ? 'userMessage' : 'apiMessage',
           message: message.content,
         })),
+        history: pairedMessages.map(([userMessage, botMessage]: any) => [
+          userMessage.content,
+          botMessage?.content || '',
+        ]),
       }));
     } catch (error) {
       console.error('Failed to fetch chat history:', error);
@@ -145,7 +156,6 @@ export default function Home() {
         }),
       });
       const data = await response.json();
-      console.log('data', data);
 
       if (data.error) {
         setError(data.error);
@@ -163,7 +173,6 @@ export default function Home() {
           history: [...state.history, [question, data.text]],
         }));
       }
-      console.log('messageState', messageState);
 
       setLoading(false);
 

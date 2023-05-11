@@ -1,8 +1,8 @@
 import { pinecone } from '@/utils/pinecone-client';
 
 export const run = async () => {
-  const targetIndex = 'leaf';
-  const targetNamespace = 'gap';
+  const targetIndex = process.env.PINECONE_INDEX_NAME ?? '';
+  const targetNamespace = 'test-namespace'; // Replace with the name of namespace to delete
 
   try {
     const index = pinecone.Index(targetIndex);
