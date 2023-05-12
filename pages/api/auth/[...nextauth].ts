@@ -21,5 +21,5 @@ export default NextAuth({
       return true;
     },
   },
-  // remove the code above to allow any email domain to sign in
+  //remove the code above to allow any email domain to sign in
 });

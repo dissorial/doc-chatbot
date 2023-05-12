@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 export default function useNamespaces(userEmail: string | undefined) {
   const [namespaces, setNamespaces] = useState<string[]>([]);
   const [selectedNamespace, setSelectedNamespace] = useState<string>('');
+
+  const router = useRouter();
 
   useEffect(() => {
     if (userEmail) {
@@ -26,6 +29,13 @@ export default function useNamespaces(userEmail: string | undefined) {
       fetchNamespaces();
     }
   }, [userEmail]);
+
+  useEffect(() => {
+    const namespaceFromUrl = router.query.namespace;
+    if (typeof namespaceFromUrl === 'string') {
+      setSelectedNamespace(namespaceFromUrl);
+    }
+  }, [router.query.namespace]);
 
   return { namespaces, selectedNamespace, setSelectedNamespace };
 }
