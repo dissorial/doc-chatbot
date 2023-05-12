@@ -20,18 +20,24 @@
 ---
 
 **Landing page**
-![Landing page](public/images/landing-page.png)
+![Landing page](public/images/landing_page.png)
 
 ---
 
 **Main chat area**
-![Main chat area](public/images/pdf-chatbot-screenshot.png)
+![Main chat area](public/images/main_desktop.png)
 
 ---
 
 **Settings page**
 
-![Settings page](public/images/settings.png)
+![Settings page](public/images/settings_desktop.png)
+
+---
+
+**Mobile layout**
+
+![Mobile layout](public/images/mobile.png)
 
 ---
 
