@@ -58,7 +58,7 @@ That's why I published this as a standalone repo. Nevertheless, some parts of th
 
 ## Local setup
 
-### 1. Clone the repo
+### Clone the repo
 
 ```
 git clone https://github.com/dissorial/pdf-chatbot.git
@@ -70,7 +70,17 @@ This repository has two branches: `master` and `old-master`. The `old-master` br
 $ git clone https://github.com/dissorial/pdf-chatbot.git -b old-master
 ```
 
-### 2. Install packages
+### Pinecone setup
+
+Create an account on Pinecone. Go to `Indexes` and `Create index`. Enter any name, put `1536` for `Dimensions` and leave the rest on default. Then go to `API keys` and `Create API key`.
+
+### MongoDB setup
+
+Create an account on MongoDB. In your dashboard, click `New Project` and name it. Then, click `Create project`. You'll be redirected to `Database Deployments` page. Click `Build a database`, and choose `M0 FREE`. Choose any provider and region, but you can leave it as-is. At the bottom, give your cluster a name, and click `Create`.
+
+Username and password should be pre-filled here. Click `Create user`. In `IP access list`, click `Add my current API address`, then `Finish and close` and `Go to databases`. Next to your cluster, there will be a `Connect` button. Click in, then go to `Drivers`. You'll find your MongoDB_URI under `Add your connection string into your application code`. Copy this to your `env` and replace `<password>` with your password (the one used when you clicked 'Create user'). Done.
+
+### Install packages
 
 ```
 yarn install
@@ -88,13 +98,19 @@ PINECONE_API_KEY=
 PINECONE_ENVIRONMENT=
 PINECONE_INDEX_NAME=
 
-MONGODB_URI=
+MONGODB_URI=''
 
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
-NEXTAUTH_URL=
+
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=
+
 JWT_SECRET=
-ALLOWED_EMAIL_DOMAIN='@example.com'
+
+ALLOWED_EMAIL_DOMAIN='@gmail.com'
+
+NODE_ENV=development
 ```
 
 #### OpenAI API
@@ -109,21 +125,29 @@ ALLOWED_EMAIL_DOMAIN='@example.com'
 
 - Visit [MongoDB](https://mongodb.com/), create a database (free one is enough for these purposes) and retrieve your URI in Connect -> Drivers
 
-#### JWT
-
-- To generate your JWT_SECRET, you can run `openssl rand -base64 32` in terminal
-
 #### Google OAuth (Client ID and secret)
 
 - Read [this guide](https://support.google.com/cloud/answer/6158849?hl=en) from Google
 
+#### NextAuth Secret
+
+- You can generate this by running `npx nextauth secret` in your terminal.
+
+#### JWT Secret
+
+- You can generate this by running `npx nextauth jwt-secret` in your terminal.
+
 #### NextAuth URL
 
-- You can use `http://localhost:3000`
+- Default is http://localhost:3000. In production, this should be the URL of your deployed app.
 
 #### Allowed email domain
 
-- Change '@example.com' to '@gmail.com' or other domains. If you want to use any email domain, remove `callback` from options in `pages/api/auth/[...nextauth].ts`
+- '@gmail.com' by default. If you want to use any email domain, remove `callback` from options in `pages/api/auth/[...nextauth].ts`
+
+#### Node environment
+
+- development by default. In production, set this to 'production' (without the quotes)
 
 ### Other
 
@@ -133,13 +157,13 @@ ALLOWED_EMAIL_DOMAIN='@example.com'
 
 ## Run the app
 
-Run `npm run dev`. Once the local dev environment launches, go to `Settings` in the bottom left corner. Upload your PDF files and give them a 'namespace'. Here, 'namespace' is synonymous with being the topic of your conversation. This way, you can upload multiple files to multiple namespaces, and maintain several conversations about different topics and documents.
+Run `npm run dev`. Once the local dev environment launches, log in with Google, and then go to `Settings` in the bottom left corner. Upload your PDF files and give them a 'namespace'. Here, 'namespace' is synonymous with being the topic of your conversation. This way, you can upload multiple files to multiple namespaces, and maintain several conversations about different topics and documents.
 
 ---
 
 ## Chatting with PDF files
 
-If you retrun to the home page now, you should see your namespace on the left sidebar. Click on it, create a new chat and have a conversation with the PDF files embedded for that particular namespace.
+If you retrun to the home page now, you should see your namespace(s) on the left sidebar. Click on it, create a new chat and have a conversation with the PDF files embedded for that particular namespace.
 
 ---
 
