@@ -73,13 +73,14 @@ export default function Home() {
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const fetchChatHistory = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `/api/history?chatId=${selectedChatId}&userEmail=${userEmail}`,
-      );
-      const data = await response.json();
+const fetchChatHistory = useCallback(async () => {
+  try {
+    const response = await fetch(
+      `/api/history?chatId=${selectedChatId}&userEmail=${userEmail}`,
+    );
+    const data = await response.json();
 
+    if (Array.isArray(data)) {
       const pairedMessages: [any, any][] = [];
 
       for (let i = 0; i < data.length; i += 2) {
@@ -97,10 +98,13 @@ export default function Home() {
           botMessage?.content || '',
         ]),
       }));
-    } catch (error) {
-      console.error('Failed to fetch chat history:', error);
+    } else {
+      console.error('Invalid data format:', data);
     }
-  }, [selectedChatId, userEmail]);
+  } catch (error) {
+    console.error('Failed to fetch chat history:', error);
+  }
+}, [selectedChatId, userEmail]);
 
   useEffect(() => {
     console.log('selectednce', selectedNamespace);
