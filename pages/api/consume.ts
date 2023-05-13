@@ -9,7 +9,7 @@ import fs from 'fs';
 import Namespace from '@/models/Namespace';
 import connectDB from '@/utils/mongoConnection';
 
-const filePath = 'docs';
+const filePath = process.env.NODE_ENV === 'production' ? '/tmp' : 'tmp';
 
 export default async function handler(
   req: NextApiRequest,

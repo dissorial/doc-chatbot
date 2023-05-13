@@ -42,7 +42,7 @@ export default async function handler(
       const oldPath = uploadedFile.path;
       const newPath = path.join(
         process.cwd(),
-        'docs',
+        '/tmp',
         uploadedFile.originalFilename,
       );
 
