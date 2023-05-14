@@ -4,9 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useDropzone } from 'react-dropzone';
 
 export default function Settings() {
-  // const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-
   const [namespaceName, setNamespaceName] = useState<string>('');
   const [deleteMessage, setDeleteMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -67,13 +65,9 @@ export default function Settings() {
     }
   };
 
-  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (event.target.files && event.target.files.length > 0) {
-  //     setSelectedFiles(event.target.files);
-  //   }
-  // };
-
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, open } = useDropzone({
+    noClick: true,
+    noKeyboard: true,
     onDrop: (acceptedFiles: File[]) => {
       setSelectedFiles(acceptedFiles);
     },
@@ -279,26 +273,16 @@ export default function Settings() {
                     d="M8 14v20c0 4.418 7.163 8 16 8 1.381 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v14m0-4c0 4.418-7.163 8-16 8S8 28.418 8 24m32 10v6m0 0v6m0-6h6m-6 0h-6"
                   />
                 </svg>
-                {/* <span className="mt-2 sm:mt-2 block text-xs sm:text-sm font-semibold text-gray-100">
-                  {selectedFiles
-                    ? Array.from(selectedFiles)
-                        .map((file) => file.name)
-                        .join(', ')
-                    : 'Select a single file or multiple files'}
-                </span> */}
+                <input
+                  {...getInputProps({
+                    onClick: (event) => event.stopPropagation(),
+                  })}
+                />
                 <span className="mt-2 sm:mt-2 block text-xs sm:text-sm font-semibold text-gray-100">
-                  {selectedFiles
+                  {selectedFiles.length > 0
                     ? selectedFiles.map((file) => file.name).join(', ')
                     : 'Select a single file or multiple files'}
                 </span>
-                <input
-                  // type="file"
-                  // name="myfile"
-                  // onChange={handleFileChange}
-                  // className="hidden"
-                  // multiple
-                  {...getInputProps()}
-                />
               </label>
             </div>
             {/* upload area */}
