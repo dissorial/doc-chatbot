@@ -23,7 +23,10 @@ const ListOfChats = ({
   deleteChat: (chatId: string) => void;
 }) => {
   return (
-    <ul role="list" className="-mx-2 space-y-1">
+    <ul role="list" className="-mx-2 space-y-1 mt-2 px-2">
+      <div className="text-xs sm:text-sm font-semibold leading-6 text-blue-400">
+        Your chats
+      </div>
       {chatList.map((chatId, index) => (
         <li
           key={chatId}

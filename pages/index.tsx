@@ -314,17 +314,17 @@ export default function Home() {
                           <li>
                             <ul role="list" className="-mx-2 space-y-1">
                               {/* mobile */}
-                              {/* new chat button */}
                               {selectedNamespace && (
-                                <div className="space-y-4 mb-4">
+                                <div className="space-y-4 mb-4 px-2">
                                   <Switch.Group
                                     as="div"
-                                    className="flex items-center justify-between"
+                                    // className="flex items-center justify-between"
+                                    className="flex flex-row items-center justify-between align-center"
                                   >
-                                    <span className="flex flex-grow flex-col">
+                                    <span className="flex flex-col">
                                       <Switch.Label
                                         as="span"
-                                        className="text-sm font-medium leading-6 text-gray-100"
+                                        className="text-xs sm:text-sm font-medium leading-6 text-blue-400"
                                         passive
                                       >
                                         Include source documents
@@ -355,7 +355,7 @@ export default function Home() {
                                     </Switch>
                                   </Switch.Group>
                                   <div>
-                                    <label className="block text-sm font-medium leading-6 text-gray-300">
+                                    <label className="block font-medium leading-6 text-xs sm:text-sm text-blue-400">
                                       Model Temperature
                                     </label>
                                     <div className="mt-2">
@@ -392,26 +392,23 @@ export default function Home() {
                               )}
 
                               {/* new chat button */}
-                              <div className="text-xs font-semibold leading-6 text-gray-400">
-                                Your chats
-                              </div>
-                              {selectedNamespace ? (
-                                <ListOfChats
-                                  chatList={chatList}
-                                  selectedChatId={selectedChatId}
-                                  setChatId={setChatId}
-                                  setSelectedChatId={setSelectedChatId}
-                                  chatNames={chatNames}
-                                  updateChatName={updateChatName}
-                                  deleteChat={deleteChat}
-                                />
-                              ) : (
-                                <div className="text-xs font-semibold leading-6 text-red-400">
-                                  Select a namespace to display chats
-                                </div>
-                              )}
                             </ul>
                           </li>
+                          {selectedNamespace ? (
+                            <ListOfChats
+                              chatList={chatList}
+                              selectedChatId={selectedChatId}
+                              setChatId={setChatId}
+                              setSelectedChatId={setSelectedChatId}
+                              chatNames={chatNames}
+                              updateChatName={updateChatName}
+                              deleteChat={deleteChat}
+                            />
+                          ) : (
+                            <div className="text-xs font-semibold leading-6 text-red-400">
+                              Select a namespace to display chats
+                            </div>
+                          )}
                           {/* mobile */}
                           <ListOfNamespaces
                             namespaces={namespaces}
@@ -450,7 +447,7 @@ export default function Home() {
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
                   <li>
                     {selectedNamespace && (
-                      <div className="space-y-4 mb-4">
+                      <div className="space-y-4 mb-6">
                         <Switch.Group
                           as="div"
                           className="flex items-center justify-between"
@@ -485,7 +482,7 @@ export default function Home() {
                           </Switch>
                         </Switch.Group>
                         <div>
-                          <label className="block text-sm font-medium leading-6 text-gray-300">
+                          <label className="block text-xs sm:text-sm text-blue-400 font-medium leading-6">
                             Model Temperature
                           </label>
                           <div className="mt-2">
@@ -522,9 +519,9 @@ export default function Home() {
                       </div>
                     )}
 
-                    <div className="text-xs font-semibold leading-6 text-gray-400">
-                      Your chats
-                    </div>
+                    {/* <div className="text-xs sm:text-sm font-semibold leading-6 text-blue-400">
+                      Your chatsrrr
+                    </div> */}
                     {/* desktop */}
                     {selectedNamespace && nameSpaceHasChats ? (
                       <ListOfChats
@@ -589,7 +586,7 @@ export default function Home() {
               />
 
               <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 items-center">
-                <span className="w-full text-center items-center rounded-md bg-blue-400/10 px-2 py-1 text-sm sm:text-md md:text-lg font-medium text-blue-400 ring-1 ring-inset ring-pink-blue/30">
+                <span className="w-full text-center items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs sm:text-sm md:text-md md:text-lg font-medium text-blue-400 ring-1 ring-inset ring-pink-blue/30">
                   PDF CHATBOT
                 </span>
 

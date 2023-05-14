@@ -61,9 +61,9 @@ function MessageList({
                   )} */}
                   {/* user and bot image */}
                   <div className="flex flex-col w-full ">
-                    <div className="w-full text-gray-300 text-lg sm:text-base p-2 sm:p-4 overflow-wrap break-words">
+                    <div className="w-full text-gray-300 p-2 sm:p-4 overflow-wrap break-words">
                       <span
-                        className={`mt-2 inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+                        className={`mt-2 inline-flex items-center rounded-md px-2 py-1 text-xs sm:text-sm font-medium ring-1 ring-inset ${
                           message.type === 'apiMessage'
                             ? 'bg-indigo-400/10 text-indigo-400 ring-indigo-400/30'
                             : 'bg-purple-400/10 text-purple-400 ring-purple-400/30'
@@ -73,10 +73,10 @@ function MessageList({
                           ? 'pdf-chatbot'
                           : userName}
                       </span>
-                      <div className="mx-auto max-w-full ">
+                      <div className="mx-auto max-w-full">
                         <ReactMarkdown
                           linkTarget="_blank"
-                          className="markdown"
+                          className="markdown text-xs sm:text-sm md:text-base leading-relaxed"
                           remarkPlugins={[remarkGfm]}
                         >
                           {message.message}
@@ -96,18 +96,18 @@ function MessageList({
                           {message.sourceDocs.map((doc, index) => (
                             <div
                               key={`messageSourceDocs-${index}`}
-                              className="mb-6 p-4 py-1 bg-gray-700 rounded-lg shadow-md" // added classes here
+                              className="mb-6 px-4 py-0 sm:py-1 bg-gray-700 rounded-lg shadow-md"
                             >
                               <AccordionItem value={`item-${index}`}>
                                 <AccordionTrigger>
-                                  <h3 className="text-sm text-white">
+                                  <h3 className="text-xs sm:text-sm md:text-base text-white">
                                     Source {index + 1}
                                   </h3>
                                 </AccordionTrigger>
                                 <AccordionContent className="mt-2 overflow-wrap break-words">
                                   <ReactMarkdown
                                     linkTarget="_blank"
-                                    className="markdown text-sm sm:text-base text-gray-300 "
+                                    className="markdown text-xs sm:text-sm md:text-base text-gray-300 leading-relaxed"
                                     remarkPlugins={[remarkGfm]}
                                   >
                                     {/* {doc.pageContent} */}

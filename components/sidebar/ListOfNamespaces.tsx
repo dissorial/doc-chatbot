@@ -16,10 +16,10 @@ const ListOfNamespaces = ({
 }) => {
   return (
     <li>
-      <div className="text-xs font-semibold leading-6 text-gray-400">
+      <div className="text-xs sm:text-sm text-blue-400 font-semibold leading-6 ">
         Your namespaces
       </div>
-      <ul role="list" className="-mx-2 mt-2 space-y-1">
+      <ul role="list" className="-mx-2 mt-2 space-y-1 px-2">
         {namespaces.map((namespace) => (
           <li key={namespace}>
             <Link
