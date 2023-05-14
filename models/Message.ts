@@ -1,10 +1,18 @@
 import mongoose, { Document } from 'mongoose';
 
+export interface IDocument {
+  pageContent: string;
+  metadata: {
+    source: string;
+  };
+}
+
 export interface IMessage extends Document {
   sender: string;
   content: string;
   chatId: string;
   namespace: string;
+  sourceDocs?: IDocument[];
 }
 
 const MessageSchema = new mongoose.Schema(
@@ -29,6 +37,14 @@ const MessageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    sourceDocs: [
+      {
+        pageContent: String,
+        metadata: {
+          source: String,
+        },
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now,

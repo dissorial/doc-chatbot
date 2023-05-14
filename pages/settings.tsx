@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
@@ -19,28 +19,49 @@ export default function Settings() {
   });
   const userEmail = session?.user?.email;
 
-  useEffect(() => {
-    const fetchNamespaces = async () => {
-      if (!userEmail) return;
+  const fetchNamespaces = useCallback(async () => {
+    if (!userEmail) return;
 
-      try {
-        const response = await fetch(
-          `/api/getNamespaces?userEmail=${userEmail}`,
-        );
-        const data = await response.json();
+    try {
+      const response = await fetch(`/api/getNamespaces?userEmail=${userEmail}`);
+      const data = await response.json();
 
-        if (response.ok) {
-          setNamespaces(data);
-        } else {
-          setError(data.error);
-        }
-      } catch (error: any) {
-        setError(error.message);
+      if (response.ok) {
+        setNamespaces(data);
+      } else {
+        setError(data.error);
       }
-    };
-
-    fetchNamespaces();
+    } catch (error: any) {
+      setError(error.message);
+    }
   }, [userEmail]);
+
+  // useEffect(() => {
+  //   const fetchNamespaces = async () => {
+  //     if (!userEmail) return;
+
+  //     try {
+  //       const response = await fetch(
+  //         `/api/getNamespaces?userEmail=${userEmail}`,
+  //       );
+  //       const data = await response.json();
+
+  //       if (response.ok) {
+  //         setNamespaces(data);
+  //       } else {
+  //         setError(data.error);
+  //       }
+  //     } catch (error: any) {
+  //       setError(error.message);
+  //     }
+  //   };
+
+  //   fetchNamespaces();
+  // }, [userEmail]);
+
+  useEffect(() => {
+    fetchNamespaces();
+  }, [userEmail, fetchNamespaces]);
 
   const handleDelete = async (namespace: string) => {
     try {
@@ -71,7 +92,6 @@ export default function Settings() {
       setSelectedFiles(event.target.files);
     }
   };
-  console.log('selecdtedfiles', selectedFiles);
 
   const handleUpload = async () => {
     if (!selectedFiles || selectedFiles.length === 0) return;
@@ -112,6 +132,11 @@ export default function Settings() {
       if (response.ok) {
         const data = await response.json();
         setMessage(data.message);
+
+        setTimeout(() => {
+          // setMessage('');
+        }, 1000);
+        fetchNamespaces();
       } else {
         const errorData = await response.json();
         setError(errorData.error);

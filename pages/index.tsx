@@ -10,18 +10,27 @@ import { useRouter } from 'next/router';
 import { useSession, signOut } from 'next-auth/react';
 import LoadingState from '@/components/other/LoadingState';
 import { Dialog, Transition } from '@headlessui/react';
+import { Switch } from '@headlessui/react';
+
 import {
   Bars3Icon,
   Cog6ToothIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import ListOfNamespaces from '@/components/sidebar/ListOfNamespaces';
 import ListOfChats from '@/components/sidebar/ListOfChats';
 import ProfileDropdown from '@/components/other/ProfileDropdown';
+import { Message } from '@/types';
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+}
 
 export default function Home() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [enabled, setEnabled] = useState<boolean>(false);
 
   const router = useRouter();
   const [query, setQuery] = useState<string>('');
@@ -31,7 +40,9 @@ export default function Home() {
     required: true,
     onUnauthenticated: () => router.push('/login'),
   });
-
+  const [returnSourceDocuments, setReturnSourceDocuments] =
+    useState<boolean>(false);
+  const [modelTemperature, setModelTemperature] = useState<number>(0.5);
   const [userEmail, setUserEmail] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
   const [userImage, setUserImage] = useState<string>('');
@@ -68,10 +79,26 @@ export default function Home() {
     history: [],
   });
 
+  function mapChatMessageToMessage(chatMessage: ChatMessage): Message {
+    return {
+      ...chatMessage,
+      sourceDocs: chatMessage.sourceDocs?.map((doc) => ({
+        pageContent: doc.pageContent,
+        metadata: { source: doc.metadata.source },
+      })),
+    };
+  }
+
   const { messages, history } = messageState;
 
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleTemperatureChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setModelTemperature(parseFloat(event.target.value));
+  };
 
   const fetchChatHistory = useCallback(async () => {
     try {
@@ -91,6 +118,10 @@ export default function Home() {
         messages: data.map((message: any) => ({
           type: message.sender === 'user' ? 'userMessage' : 'apiMessage',
           message: message.content,
+          sourceDocs: message.sourceDocs?.map((doc: any) => ({
+            pageContent: doc.pageContent,
+            metadata: { source: doc.metadata.source },
+          })),
         })),
         history: pairedMessages.map(([userMessage, botMessage]: any) => [
           userMessage.content,
@@ -101,10 +132,6 @@ export default function Home() {
       console.error('Failed to fetch chat history:', error);
     }
   }, [selectedChatId, userEmail]);
-
-  useEffect(() => {
-    console.log('selectednce', selectedNamespace);
-  }, [selectedNamespace]);
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.email) {
@@ -174,6 +201,8 @@ export default function Home() {
           chatId,
           selectedNamespace,
           userEmail,
+          returnSourceDocuments,
+          modelTemperature,
         }),
       });
       const data = await response.json();
@@ -331,6 +360,7 @@ export default function Home() {
                             selectedNamespace={selectedNamespace}
                             setSelectedNamespace={setSelectedNamespace}
                           />
+
                           {/* mobile */}
                           <li className="mt-auto">
                             <button
@@ -362,21 +392,76 @@ export default function Home() {
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
                   <li>
                     {selectedNamespace && (
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-full mb-8"
-                        onClick={async () => {
-                          const newChatId = await createChat();
-                          setChatId(newChatId);
-                          setSelectedChatId(newChatId);
-                        }}
-                      >
-                        <PlusCircleIcon
-                          className="-ml-0.5 h-5 w-5"
-                          aria-hidden="true"
-                        />
-                        New chat
-                      </button>
+                      <div className="space-y-4 mb-4">
+                        <Switch.Group
+                          as="div"
+                          className="flex items-center justify-between"
+                        >
+                          <span className="flex flex-grow flex-col">
+                            <Switch.Label
+                              as="span"
+                              className="text-sm font-medium leading-6 text-gray-100"
+                              passive
+                            >
+                              Include source documents
+                            </Switch.Label>
+                          </span>
+                          <Switch
+                            checked={enabled}
+                            onChange={(checked) => {
+                              setEnabled(checked);
+                              setReturnSourceDocuments(checked);
+                            }}
+                            className={classNames(
+                              enabled ? 'bg-indigo-600' : 'bg-gray-200',
+                              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2',
+                            )}
+                          >
+                            <span
+                              aria-hidden="true"
+                              className={classNames(
+                                enabled ? 'translate-x-5' : 'translate-x-0',
+                                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                              )}
+                            />
+                          </Switch>
+                        </Switch.Group>
+                        <div>
+                          <label className="block text-sm font-medium leading-6 text-gray-300">
+                            Model Temperature
+                          </label>
+                          <div className="mt-2">
+                            <input
+                              type="number"
+                              min="0"
+                              max="1"
+                              value={modelTemperature}
+                              onChange={handleTemperatureChange}
+                              step="0.1"
+                              name="temperature"
+                              id="temperature"
+                              className="block w-full rounded-md bg-gray-800 text-gray-300 border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              placeholder="0.0 - 1.0"
+                            />
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-full mb-8"
+                          onClick={async () => {
+                            const newChatId = await createChat();
+                            setChatId(newChatId);
+                            setSelectedChatId(newChatId);
+                          }}
+                        >
+                          <PlusCircleIcon
+                            className="-ml-0.5 h-5 w-5"
+                            aria-hidden="true"
+                          />
+                          New chat
+                        </button>
+                      </div>
                     )}
 
                     <div className="text-xs font-semibold leading-6 text-gray-400">
@@ -409,6 +494,7 @@ export default function Home() {
                     selectedNamespace={selectedNamespace}
                     setSelectedNamespace={setSelectedNamespace}
                   />
+
                   {/* desktop */}
                   <li className="mt-auto">
                     <button
@@ -469,7 +555,7 @@ export default function Home() {
                 <>
                   <div className="overflow-y-auto">
                     <MessageList
-                      messages={messages}
+                      messages={messages.map(mapChatMessageToMessage)}
                       loading={loading}
                       messageListRef={messageListRef}
                       userImage={userImage}

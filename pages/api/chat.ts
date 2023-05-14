@@ -5,12 +5,21 @@ import { makeChain } from '@/utils/makechain';
 import { pinecone } from '@/utils/pinecone-client';
 import connectDB from '@/utils/mongoConnection';
 import Message from '@/models/Message';
+import { SourceDoc } from '@/types';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { question, history, chatId, selectedNamespace, userEmail } = req.body;
+  const {
+    question,
+    history,
+    chatId,
+    selectedNamespace,
+    userEmail,
+    returnSourceDocuments,
+    modelTemperature,
+  } = req.body;
   const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
 
   if (req.method !== 'POST') {
@@ -48,7 +57,11 @@ export default async function handler(
 
     await userMessage.save();
 
-    const chain = makeChain(vectorStore);
+    const chain = makeChain(
+      vectorStore,
+      returnSourceDocuments,
+      modelTemperature,
+    );
     const response = await chain.call({
       question: sanitizedQuestion,
       chat_history: history || [],
@@ -60,6 +73,12 @@ export default async function handler(
       chatId: chatId,
       namespace: selectedNamespace,
       userEmail: userEmail,
+      sourceDocs: response.sourceDocuments
+        ? response.sourceDocuments.map((doc: SourceDoc) => ({
+            pageContent: doc.pageContent,
+            metadata: { source: doc.metadata.source },
+          }))
+        : [],
     });
 
     await botMessage.save();

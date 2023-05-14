@@ -66,12 +66,16 @@ Context: {context}
 
 Question: {question}
 
-Answer in markdown. If unsure, say "Uncertain based on the documents". Answer:`;
+Answer in markdown. Be concise, follow the instructions in the question to the letter. If unsure, say "Uncertain based on the documents". Answer:`;
 
 // Creates a ConversationalRetrievalQAChain object that uses an OpenAI model and a PineconeStore vectorstore
-export const makeChain = (vectorstore: PineconeStore) => {
+export const makeChain = (
+  vectorstore: PineconeStore,
+  returnSourceDocuments: boolean,
+  modelTemperature: number,
+) => {
   const model = new OpenAI({
-    temperature: 0.5, // increase temepreature to get more creative answers
+    temperature: modelTemperature, // increase temepreature to get more creative answers
     modelName: 'gpt-3.5-turbo', //change this to gpt-4 if you have access
   });
 
@@ -82,7 +86,7 @@ export const makeChain = (vectorstore: PineconeStore) => {
     {
       qaTemplate: QA_PROMPT,
       questionGeneratorTemplate: CONDENSE_PROMPT,
-      returnSourceDocuments: false,
+      returnSourceDocuments,
     },
   );
   return chain;
