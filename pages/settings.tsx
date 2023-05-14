@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import { useDropzone } from 'react-dropzone';
 
 export default function Settings() {
-  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+  // const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
   const [namespaceName, setNamespaceName] = useState<string>('');
   const [deleteMessage, setDeleteMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -36,29 +39,6 @@ export default function Settings() {
     }
   }, [userEmail]);
 
-  // useEffect(() => {
-  //   const fetchNamespaces = async () => {
-  //     if (!userEmail) return;
-
-  //     try {
-  //       const response = await fetch(
-  //         `/api/getNamespaces?userEmail=${userEmail}`,
-  //       );
-  //       const data = await response.json();
-
-  //       if (response.ok) {
-  //         setNamespaces(data);
-  //       } else {
-  //         setError(data.error);
-  //       }
-  //     } catch (error: any) {
-  //       setError(error.message);
-  //     }
-  //   };
-
-  //   fetchNamespaces();
-  // }, [userEmail]);
-
   useEffect(() => {
     fetchNamespaces();
   }, [userEmail, fetchNamespaces]);
@@ -87,11 +67,18 @@ export default function Settings() {
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedFiles(event.target.files);
-    }
-  };
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.files && event.target.files.length > 0) {
+  //     setSelectedFiles(event.target.files);
+  //   }
+  // };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles: File[]) => {
+      setSelectedFiles(acceptedFiles);
+    },
+    multiple: true,
+  });
 
   const handleUpload = async () => {
     if (!selectedFiles || selectedFiles.length === 0) return;
@@ -271,9 +258,12 @@ export default function Settings() {
               Treat namespaces like topics of conversation. You can create as
               many as you like, and they can be used to organize your data.
             </p>
-            <div className="mt-4 sm:mt-8 flex justify-center">
+            <div
+              className="mt-4 sm:mt-8 flex justify-center"
+              {...getRootProps()}
+            >
               {' '}
-              <label className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-6 sm:p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mb-4 cursor-pointer">
+              <label className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-6 sm:p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer">
                 {' '}
                 <svg
                   className="mx-auto h-8 sm:h-12 w-8 sm:w-12 text-gray-400"
@@ -289,19 +279,25 @@ export default function Settings() {
                     d="M8 14v20c0 4.418 7.163 8 16 8 1.381 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v14m0-4c0 4.418-7.163 8-16 8S8 28.418 8 24m32 10v6m0 0v6m0-6h6m-6 0h-6"
                   />
                 </svg>
-                <span className="mt-2 sm:mt-2 block text-xs sm:text-sm font-semibold text-gray-100">
+                {/* <span className="mt-2 sm:mt-2 block text-xs sm:text-sm font-semibold text-gray-100">
                   {selectedFiles
                     ? Array.from(selectedFiles)
                         .map((file) => file.name)
                         .join(', ')
                     : 'Select a single file or multiple files'}
+                </span> */}
+                <span className="mt-2 sm:mt-2 block text-xs sm:text-sm font-semibold text-gray-100">
+                  {selectedFiles
+                    ? selectedFiles.map((file) => file.name).join(', ')
+                    : 'Select a single file or multiple files'}
                 </span>
                 <input
-                  type="file"
-                  name="myfile"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  multiple
+                  // type="file"
+                  // name="myfile"
+                  // onChange={handleFileChange}
+                  // className="hidden"
+                  // multiple
+                  {...getInputProps()}
                 />
               </label>
             </div>
