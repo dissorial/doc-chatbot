@@ -281,7 +281,7 @@ export default function Settings() {
                 <span className="mt-2 sm:mt-2 block text-xs sm:text-sm font-semibold text-gray-100">
                   {selectedFiles.length > 0
                     ? selectedFiles.map((file) => file.name).join(', ')
-                    : 'Select a single file or multiple files'}
+                    : 'Drag and drop or click to select files to upload'}
                 </span>
               </label>
             </div>
