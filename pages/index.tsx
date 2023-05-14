@@ -316,21 +316,79 @@ export default function Home() {
                               {/* mobile */}
                               {/* new chat button */}
                               {selectedNamespace && (
-                                <button
-                                  type="button"
-                                  className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-full mb-8"
-                                  onClick={async () => {
-                                    const newChatId = await createChat();
-                                    setChatId(newChatId);
-                                    setSelectedChatId(newChatId);
-                                  }}
-                                >
-                                  <PlusCircleIcon
-                                    className="-ml-0.5 h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                  New chat
-                                </button>
+                                <div className="space-y-4 mb-4">
+                                  <Switch.Group
+                                    as="div"
+                                    className="flex items-center justify-between"
+                                  >
+                                    <span className="flex flex-grow flex-col">
+                                      <Switch.Label
+                                        as="span"
+                                        className="text-sm font-medium leading-6 text-gray-100"
+                                        passive
+                                      >
+                                        Include source documents
+                                      </Switch.Label>
+                                    </span>
+                                    <Switch
+                                      checked={enabled}
+                                      onChange={(checked) => {
+                                        setEnabled(checked);
+                                        setReturnSourceDocuments(checked);
+                                      }}
+                                      className={classNames(
+                                        enabled
+                                          ? 'bg-indigo-600'
+                                          : 'bg-gray-200',
+                                        'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2',
+                                      )}
+                                    >
+                                      <span
+                                        aria-hidden="true"
+                                        className={classNames(
+                                          enabled
+                                            ? 'translate-x-5'
+                                            : 'translate-x-0',
+                                          'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                                        )}
+                                      />
+                                    </Switch>
+                                  </Switch.Group>
+                                  <div>
+                                    <label className="block text-sm font-medium leading-6 text-gray-300">
+                                      Model Temperature
+                                    </label>
+                                    <div className="mt-2">
+                                      <input
+                                        type="number"
+                                        min="0"
+                                        max="1"
+                                        value={modelTemperature}
+                                        onChange={handleTemperatureChange}
+                                        step="0.1"
+                                        name="temperature"
+                                        id="temperature"
+                                        className="block w-full rounded-md bg-gray-800 text-gray-300 border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        placeholder="0.0 - 1.0"
+                                      />
+                                    </div>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-full mb-8"
+                                    onClick={async () => {
+                                      const newChatId = await createChat();
+                                      setChatId(newChatId);
+                                      setSelectedChatId(newChatId);
+                                    }}
+                                  >
+                                    <PlusCircleIcon
+                                      className="-ml-0.5 h-5 w-5"
+                                      aria-hidden="true"
+                                    />
+                                    New chat
+                                  </button>
+                                </div>
                               )}
 
                               {/* new chat button */}
@@ -531,9 +589,9 @@ export default function Home() {
               />
 
               <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 items-center">
-                <p className="text-2xl font-semibold text-gray-100 text-center w-full">
-                  pdf-chatbot
-                </p>
+                <span className="w-full text-center items-center rounded-md bg-blue-400/10 px-2 py-1 text-sm sm:text-md md:text-lg font-medium text-blue-400 ring-1 ring-inset ring-pink-blue/30">
+                  PDF CHATBOT
+                </span>
 
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
                   {/* Separator */}
@@ -559,6 +617,7 @@ export default function Home() {
                       loading={loading}
                       messageListRef={messageListRef}
                       userImage={userImage}
+                      userName={userName}
                     />
                   </div>
 

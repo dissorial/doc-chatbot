@@ -17,6 +17,7 @@ interface MessageListProps {
   loading: boolean;
   messageListRef: React.RefObject<HTMLDivElement>;
   userImage?: string | null;
+  userName?: string | null;
 }
 
 function MessageList({
@@ -24,6 +25,7 @@ function MessageList({
   loading,
   messageListRef,
   userImage,
+  userName,
 }: MessageListProps) {
   console.log(messages);
   return (
@@ -34,14 +36,15 @@ function MessageList({
             return (
               <div
                 key={`chatMessage-${index}`}
-                className={`${
+                className={` ${
                   message.type === 'apiMessage'
                     ? 'bg-gray-700/50'
                     : 'bg-gray-800/90'
                 }`}
               >
                 <div className="flex items-center justify-start max-w-full sm:max-w-4xl  mx-auto overflow-hidden px-2 sm:px-4">
-                  {message.type === 'apiMessage' ? (
+                  {/* user and bot image */}
+                  {/* {message.type === 'apiMessage' ? (
                     <div className="flex-shrink-0 p-1">
                       <CodeBracketSquareIcon className="h-8 sm:h-10 w-8 sm:w-10 text-white rounded-full object-cover mr-2 sm:mr-3" />
                     </div>
@@ -55,11 +58,22 @@ function MessageList({
                         className="h-8 sm:h-10 w-8 sm:w-10 rounded-full object-cover mr-2 sm:mr-3"
                       />
                     </div>
-                  )}
-
+                  )} */}
+                  {/* user and bot image */}
                   <div className="flex flex-col w-full ">
-                    <div className="w-full text-gray-100 p-2 sm:p-4 overflow-wrap break-words">
-                      <div className="mx-auto max-w-full text-xs sm:text-sm ">
+                    <div className="w-full text-gray-300 text-lg sm:text-base p-2 sm:p-4 overflow-wrap break-words">
+                      <span
+                        className={`mt-2 inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+                          message.type === 'apiMessage'
+                            ? 'bg-indigo-400/10 text-indigo-400 ring-indigo-400/30'
+                            : 'bg-purple-400/10 text-purple-400 ring-purple-400/30'
+                        }`}
+                      >
+                        {message.type === 'apiMessage'
+                          ? 'pdf-chatbot'
+                          : userName}
+                      </span>
+                      <div className="mx-auto max-w-full ">
                         <ReactMarkdown
                           linkTarget="_blank"
                           className="markdown"
@@ -77,18 +91,23 @@ function MessageList({
                         <Accordion
                           type="single"
                           collapsible
-                          className="flex-col"
+                          className="flex flex-col"
                         >
                           {message.sourceDocs.map((doc, index) => (
-                            <div key={`messageSourceDocs-${index}`}>
+                            <div
+                              key={`messageSourceDocs-${index}`}
+                              className="mb-4 p-2 sm:px-4 py-1 bg-gray-700 rounded-lg shadow-md" // added classes here
+                            >
                               <AccordionItem value={`item-${index}`}>
                                 <AccordionTrigger>
-                                  <h3>Source {index + 1}</h3>
+                                  <h3 className="text-sm text-white">
+                                    Source {index + 1}
+                                  </h3>
                                 </AccordionTrigger>
-                                <AccordionContent>
+                                <AccordionContent className="mt-2">
                                   <ReactMarkdown
                                     linkTarget="_blank"
-                                    className="markdown"
+                                    className="markdown text-sm sm:text-base text-gray-300"
                                     remarkPlugins={[remarkGfm]}
                                   >
                                     {/* {doc.pageContent} */}
@@ -118,11 +137,10 @@ function MessageList({
         </div>
       </div>
       {loading && (
-        <div className="flex items-center justify-center bg-gradient-to-b from-gray-900 via-gray-900/70 to-gray-800/30">
+        <div className="flex items-center justify-center h-32 w-full bg-gradient-to-b from-gray-900 via-gray-900/70 to-gray-800/30">
           <div className="flex-shrink-0 p-1">
             <LoadingDots color="#04d9ff" />
           </div>
-          <div className="h-32 w-32 border-gray-900 text-white bg-transparent"></div>
         </div>
       )}
     </>
