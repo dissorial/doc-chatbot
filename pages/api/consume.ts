@@ -4,6 +4,8 @@ import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { pinecone } from '@/utils/pinecone-client';
 import { CustomPDFLoader } from '@/utils/customPDFLoader';
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
+import { DocxLoader } from 'langchain/document_loaders/fs/docx';
+import { TextLoader } from 'langchain/document_loaders/fs/text';
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import Namespace from '@/models/Namespace';
@@ -32,6 +34,8 @@ export default async function handler(
     // Load PDF files from the specified directory
     const directoryLoader = new DirectoryLoader(filePath, {
       '.pdf': (path) => new CustomPDFLoader(path),
+      '.docx': (path) => new DocxLoader(path),
+      '.txt': (path) => new TextLoader(path),
     });
 
     const rawDocs = await directoryLoader.load();
@@ -57,11 +61,16 @@ export default async function handler(
       textKey: 'text',
     });
 
-    // Delete the PDF files
-    const pdfFiles = fs
+    // Delete the PDF, DOCX and TXT files
+    const filesToDelete = fs
       .readdirSync(filePath)
-      .filter((file) => file.endsWith('.pdf'));
-    pdfFiles.forEach((file) => {
+      .filter(
+        (file) =>
+          file.endsWith('.pdf') ||
+          file.endsWith('.docx') ||
+          file.endsWith('.txt'),
+      );
+    filesToDelete.forEach((file) => {
       fs.unlinkSync(`${filePath}/${file}`);
     });
 
