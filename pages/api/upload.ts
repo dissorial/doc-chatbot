@@ -1,5 +1,7 @@
 import multiparty from 'multiparty';
 import { NextApiRequest, NextApiResponse } from 'next';
+import path from 'path';
+import fs from 'fs';
 
 interface UploadedFile {
   fieldName: string;
@@ -37,7 +39,23 @@ export default async function handler(
       }
 
       const uploadedFile = file[0] as UploadedFile;
-      uploadedFiles.push(uploadedFile.originalFilename);
+
+      if (process.env.NODE_ENV !== 'production') {
+        // In local development, move the file from the OS temp directory to the project 'tmp' directory
+        const projectTmpDir = path.join(process.cwd(), 'tmp');
+        fs.mkdirSync(projectTmpDir, { recursive: true });
+
+        const newFilePath = path.join(
+          projectTmpDir,
+          uploadedFile.originalFilename,
+        );
+        fs.renameSync(uploadedFile.path, newFilePath);
+
+        uploadedFiles.push(newFilePath);
+      } else {
+        // In production, just use the file as is
+        uploadedFiles.push(uploadedFile.path);
+      }
     }
 
     if (uploadedFiles.length > 0) {
