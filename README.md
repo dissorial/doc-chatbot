@@ -1,13 +1,14 @@
-# ChatPDF Plus: GPT-4 x Pinecone x LangChain x MongoDB
+# doc-chatbot: GPT-4 x Pinecone x LangChain x MongoDB
 
 ## Features
 
 - Create **multiple** topics to chat about
 - Google OAuth to log in and store chats in MongoDB associated with your email
-- Upload **any number of PDF files** to each topic
+- Upload **any number of files** to each topic
 - Create **any number of chats** (chat windows) for each topic
 - Upload files, convert them to embeddings, store the embeddings in a namespace and upload to Pinecone, and delete Pinecone namespaces **from within the browser**
 - Upload and automatically **retrieve chat history** for all chats using MongoDB
+- Supports `.pdf`, `.docx` and `.txt`
 
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
@@ -144,13 +145,13 @@ NODE_ENV=development
 
 ## Run the app
 
-Run `npm run dev`. Once the local dev environment launches, log in with Google, and then go to `Settings` in the bottom left corner. Upload your PDF files and give them a 'namespace'. Here, 'namespace' is synonymous with being the topic of your conversation. This way, you can upload multiple files to multiple namespaces, and maintain several conversations about different topics and documents.
+Run `npm run dev`. Once the local dev environment launches, log in with Google, and then go to `Settings` in the bottom left corner. Upload your files and give them a 'namespace'. Here, 'namespace' is synonymous with being the topic of your conversation. This way, you can upload multiple files to multiple namespaces, and maintain several conversations about different topics and documents.
 
 ---
 
-## Chatting with PDF files
+## Chatting with files
 
-If you retrun to the home page now, you should see your namespace(s) on the left sidebar. Click on it, create a new chat and have a conversation with the PDF files embedded for that particular namespace.
+If you retrun to the home page now, you should see your namespace(s) on the left sidebar. Click on it, create a new chat and have a conversation with the files embedded for that particular namespace.
 
 ---
 
@@ -159,7 +160,7 @@ If you retrun to the home page now, you should see your namespace(s) on the left
 ### General errors
 
 - Make sure that you are running the latest version of Node. To check your version run node -v.
-- If you're encountering issues with a specific PDF, try converting it to text first or try a different PDF file. It's possible that the PDF is corrupted, scanned, or requires OCR to be converted to text.
+- If you're encountering issues with a specific file, try converting it to text first or try a different file. It's possible that the file is corrupted, scanned, or requires OCR to be converted to text.
 - Consider logging the env variables and ensure that they are properly exposed.
 - Confirm that you're using the same versions of LangChain and Pinecone as this repository.
 - Check that you've created an .env file that contains your valid API keys, environment, and index name.
