@@ -96,7 +96,7 @@ function MessageList({
                           {message.sourceDocs.map((doc, index) => (
                             <div
                               key={`messageSourceDocs-${index}`}
-                              className="mb-4 p-2 sm:px-4 py-1 bg-gray-700 rounded-lg shadow-md" // added classes here
+                              className="mb-6 p-4 py-1 bg-gray-700 rounded-lg shadow-md" // added classes here
                             >
                               <AccordionItem value={`item-${index}`}>
                                 <AccordionTrigger>
@@ -104,10 +104,10 @@ function MessageList({
                                     Source {index + 1}
                                   </h3>
                                 </AccordionTrigger>
-                                <AccordionContent className="mt-2">
+                                <AccordionContent className="mt-2 overflow-wrap break-words">
                                   <ReactMarkdown
                                     linkTarget="_blank"
-                                    className="markdown text-sm sm:text-base text-gray-300"
+                                    className="markdown text-sm sm:text-base text-gray-300 "
                                     remarkPlugins={[remarkGfm]}
                                   >
                                     {/* {doc.pageContent} */}
