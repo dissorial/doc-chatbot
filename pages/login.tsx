@@ -60,16 +60,51 @@ export default function Login() {
                     {session ? (
                       <p>Signed in as {session?.user?.name}</p>
                     ) : (
-                      <p>pdf-chatbot</p>
+                      <p>doc-chatbot</p>
                     )}
                   </span>
                 </a>
               </div>
+
               <h1 className="mt-10 text-4xl font-bold tracking-tight text-white sm:text-6xl">
-                Have a conversation with your PDF files
+                Have a conversation with your documents
               </h1>
+
+              <div className="flex mt-10 space-x-4">
+                <span className="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-800">
+                  <svg
+                    className="h-1.5 w-1.5 fill-indigo-400"
+                    viewBox="0 0 6 6"
+                    aria-hidden="true"
+                  >
+                    <circle cx={3} cy={3} r={3} />
+                  </svg>
+                  .pdf
+                </span>
+                <span className="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-800">
+                  <svg
+                    className="h-1.5 w-1.5 fill-purple-400"
+                    viewBox="0 0 6 6"
+                    aria-hidden="true"
+                  >
+                    <circle cx={3} cy={3} r={3} />
+                  </svg>
+                  .docx
+                </span>
+                <span className="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-800">
+                  <svg
+                    className="h-1.5 w-1.5 fill-pink-400"
+                    viewBox="0 0 6 6"
+                    aria-hidden="true"
+                  >
+                    <circle cx={3} cy={3} r={3} />
+                  </svg>
+                  .txt
+                </span>
+              </div>
+
               <p className="mt-6 text-lg leading-8 text-gray-300">
-                Upload your PDF files and have a conversation with them.
+                Upload your files, ask questions, and get relevant answers.
                 Maintain multiple chats, windows, and conversations in one
                 place.
               </p>
@@ -92,7 +127,7 @@ export default function Login() {
                     </button>
                     <button
                       type="button"
-                      className="inline-flex rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                      className="inline-flex rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-300"
                       onClick={() => router.push('/')}
                     >
                       Chat

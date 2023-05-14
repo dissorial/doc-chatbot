@@ -294,7 +294,7 @@ export default function Settings() {
                     ? Array.from(selectedFiles)
                         .map((file) => file.name)
                         .join(', ')
-                    : 'Select a single PDF file or multiple files'}
+                    : 'Select a single file or multiple files'}
                 </span>
                 <input
                   type="file"

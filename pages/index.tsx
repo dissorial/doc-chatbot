@@ -587,7 +587,7 @@ export default function Home() {
 
               <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 items-center">
                 <span className="w-full text-center items-center rounded-md bg-blue-400/10 px-2 py-1 text-xs sm:text-sm md:text-md md:text-lg font-medium text-blue-400 ring-1 ring-inset ring-pink-blue/30">
-                  PDF CHATBOT
+                  DOC CHATBOT
                 </span>
 
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
@@ -634,7 +634,7 @@ export default function Home() {
                 <>
                   <div className="flex flex-col items-center justify-center align-center h-screen px-4">
                     <h1 className="text-xl md:text-3xl text-center font-semibold text-gray-100">
-                      Welcome to pdf-chatbot
+                      Welcome to doc-chatbot
                     </h1>
                     <p className="text-md md:text-xl text-center text-gray-100 mt-4">
                       {!nameSpaceHasChats && selectedNamespace
