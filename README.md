@@ -52,12 +52,6 @@ That's why I published this as a standalone repo. Nevertheless, some parts of th
 git clone https://github.com/dissorial/pdf-chatbot.git
 ```
 
-This repository has two branches: `master` and `old-master`. The `old-master` branch contains working code that you can run locally and has all the features except for Google OAuth. If you want to avoid setting up Google OAuth, clone that branch with:
-
-```
-$ git clone https://github.com/dissorial/pdf-chatbot.git -b old-master
-```
-
 ### Pinecone setup
 
 Create an account on Pinecone. Go to `Indexes` and `Create index`. Enter any name, put `1536` for `Dimensions` and leave the rest on default. Then go to `API keys` and `Create API key`.
