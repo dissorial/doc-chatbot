@@ -68,7 +68,7 @@ Username and password should be pre-filled here. Click `Create user`. In `IP acc
 yarn install
 ```
 
-### 3. Set up your `.env` file
+### Set up your `.env` file
 
 - Rename `.env.example` to `.env`
 - Your `.env` file should look like this:
