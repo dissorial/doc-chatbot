@@ -76,7 +76,7 @@ Go to Google Developer Console and create a new project.
 
 #### OAuth conset screen
 
-- Navigate to `APIs & Serivces`, then `OAuth consent screen`. Click on `External`, then `Create`. Give the app a name, fill out the fields for emails/developer contact information and then continue. In the `Scopes` section, click `Add or remove scopes` and check `.../auth.userinfo.email`, then `Save and continue`. In the `Test users section`, add yourself (your email), then `Save and Continue` and then `Back to dashboard`.
+- Navigate to `APIs & Services`, then `OAuth consent screen`. Click on `External`, then `Create`. Give the app a name, fill out the fields for emails/developer contact information and then continue. In the `Scopes` section, click `Add or remove scopes` and check `.../auth.userinfo.email`, then `Save and continue`. In the `Test users section`, add yourself (your email), then `Save and Continue` and then `Back to dashboard`.
 
 #### Credentials
 
