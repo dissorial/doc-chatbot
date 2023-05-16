@@ -52,9 +52,13 @@ That's why I published this as a standalone repo. Nevertheless, some parts of th
 git clone https://github.com/dissorial/pdf-chatbot.git
 ```
 
+---
+
 ### Pinecone setup
 
 Create an account on Pinecone. Go to `Indexes` and `Create index`. Enter any name, put `1536` for `Dimensions` and leave the rest on default. Then go to `API keys` and `Create API key`.
+
+---
 
 ### MongoDB setup
 
@@ -62,11 +66,34 @@ Create an account on MongoDB. In your dashboard, click `New Project` and name it
 
 Username and password should be pre-filled here. Click `Create user`. In `IP access list`, click `Add my current API address`, then `Finish and close` and `Go to databases`. Next to your cluster, there will be a `Connect` button. Click in, then go to `Drivers`. You'll find your MongoDB_URI under `Add your connection string into your application code`. Copy this to your `env` and replace `<password>` with your password (the one used when you clicked 'Create user'). Done.
 
+---
+
+### Google Auth Setup
+
+Go to Google Developer Console and create a new project.
+
+#### OAuth conset screen
+
+- Navigate to `APIs & Serivces`, then `OAuth consent screen`. Click on `External`, then `Create`. Give the app a name, fill out the fields for emails/developer contact information and then continue. In the `Scopes` section, click `Add or remove scopes` and check `.../auth.userinfo.email`, then `Save and continue`. In the `Test users section`, add yourself (your email), then `Save and Continue` and then `Back to dashboard`.
+
+#### Credentials
+
+Go to `Credentials` (still under APIs and Services) and click `Create credentials`, then `OAuth Client ID`. Selectd `Web application` under `Application type` and give it any name.
+
+Under `Authorized JavaScript origins`, add `http://localhost:3000`.
+Under `Authorized redirect URIs`, add `http://localhost:3000/api/auth/callback/google`.
+
+Then `Create`. This will also show your Google Client ID and secret.
+
+---
+
 ### Install packages
 
 ```
 yarn install
 ```
+
+---
 
 ### Set up your `.env` file
 
@@ -95,39 +122,29 @@ ALLOWED_EMAIL_DOMAIN='@gmail.com'
 NODE_ENV=development
 ```
 
-#### OpenAI API
+---
+
+### OpenAI API
 
 - Visit [OpenAI](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key) to retrieve API keys and insert into your `.env` file
 
-#### Pinecone
-
-- Visit [Pinecone](https://pinecone.io/) to create and retrieve your API keys, and also retrieve your environment and index name from the dashboard.
-
-#### MongoDB
-
-- Visit [MongoDB](https://mongodb.com/), create a database (free one is enough for these purposes) and retrieve your URI in Connect -> Drivers
-
-#### Google OAuth (Client ID and secret)
-
-- Read [this guide](https://support.google.com/cloud/answer/6158849?hl=en) from Google
-
-#### NextAuth Secret
+### NextAuth Secret
 
 - You can generate this by running `npx nextauth secret` in your terminal.
 
-#### JWT Secret
+### JWT Secret
 
 - You can generate this by running `npx nextauth jwt-secret` in your terminal.
 
-#### NextAuth URL
+### NextAuth URL
 
 - Default is http://localhost:3000. In production, this should be the URL of your deployed app.
 
-#### Allowed email domain
+### Allowed email domain
 
 - '@gmail.com' by default. If you want to use any email domain, remove `callback` from options in `pages/api/auth/[...nextauth].ts`
 
-#### Node environment
+### Node environment
 
 - development by default. In production, set this to 'production' (without the quotes)
 
