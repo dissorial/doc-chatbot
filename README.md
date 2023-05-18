@@ -132,11 +132,11 @@ NODE_ENV=development
 
 ### NextAuth Secret
 
-- You can generate this by running `npx nextauth secret` in your terminal.
+- You can generate this by running `openssl rand -base64 32` in Git Bash.
 
 ### JWT Secret
 
-- You can generate this by running `npx nextauth jwt-secret` in your terminal.
+- You can generate this by running `openssl rand -base64 32` in Git Bash.
 
 ### NextAuth URL
 
