@@ -17,19 +17,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { namespaceName, userEmail } = req.query;
+  const { namespaceName, userEmail, chunkSize, overlapSize } = req.query;
 
   const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
 
   try {
     await connectDB();
 
-    // Create a new namespace with the given name and user email
-    const newNamespace = new Namespace({
-      userEmail: userEmail as string,
+    const existingNamespace = await Namespace.findOne({
       name: namespaceName as string,
     });
-    await newNamespace.save();
+
+    if (!existingNamespace) {
+      const newNamespace = new Namespace({
+        userEmail: userEmail as string,
+        name: namespaceName as string,
+      });
+      await newNamespace.save();
+    }
 
     // Load PDF files from the specified directory
     const directoryLoader = new DirectoryLoader(filePath, {
@@ -42,8 +47,8 @@ export default async function handler(
 
     // Split the PDF documents into smaller chunks
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1200,
-      chunkOverlap: 200,
+      chunkSize: Number(chunkSize),
+      chunkOverlap: Number(overlapSize),
     });
 
     const docs = await textSplitter.splitDocuments(rawDocs);

@@ -27,7 +27,6 @@ function MessageList({
   userImage,
   userName,
 }: MessageListProps) {
-  console.log(messages);
   return (
     <>
       <div className="overflow-y-auto">

@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { useDropzone } from 'react-dropzone';
+import ChunkSizeModal from '@/components/other/ChunkSizeModal';
+import OverlapSizeModal from '@/components/other/OverlapSizeModal';
+import { QuestionMarkCircleIcon } from '@heroicons/react/20/solid';
 
 export default function Settings() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -12,6 +15,12 @@ export default function Settings() {
   const [uploadMessage, setUploadMessage] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [namespaces, setNamespaces] = useState<string[]>([]);
+  const [chunkSize, setChunkSize] = useState<number>(1200);
+  const [overlapSize, setOverlapSize] = useState<number>(20);
+  const [selectedNamespace, setSelectedNamespace] = useState<string>('');
+  const [showChunkSizeModal, setShowChunkSizeModal] = useState<boolean>(false);
+  const [showOverlapSizeModal, setShowOverlapSizeModal] =
+    useState<boolean>(false);
   const router = useRouter();
 
   const { data: session, status } = useSession({
@@ -104,7 +113,7 @@ export default function Settings() {
       setLoading(true);
 
       const response = await fetch(
-        `/api/consume?namespaceName=${namespaceName}&userEmail=${userEmail}`,
+        `/api/consume?namespaceName=${namespaceName}&userEmail=${userEmail}&chunkSize=${chunkSize}&overlapSize=${overlapSize}`,
         {
           method: 'POST',
         },
@@ -203,7 +212,7 @@ export default function Settings() {
                 </span>
               )}
 
-              <ul role="list" className="space-y-4">
+              <ul role="list" className="grid grid-cols-2 gap-4">
                 {namespaces.map((namespace) => (
                   <li
                     key={namespace}
@@ -215,12 +224,29 @@ export default function Settings() {
                       </p>
                     </div>
                     <div className="flex-shrink-0">
-                      <button
-                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        onClick={() => handleDelete(namespace)}
-                      >
-                        Delete
-                      </button>
+                      {selectedNamespace === namespace ? (
+                        <>
+                          <button
+                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700                   focus:ring-indigo-500"
+                            onClick={() => handleDelete(selectedNamespace)}
+                          >
+                            Confirm Delete
+                          </button>
+                          <button
+                            className="ml-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-gray-300 hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            onClick={() => setSelectedNamespace('')}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          onClick={() => setSelectedNamespace(namespace)}
+                        >
+                          Delete
+                        </button>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -252,6 +278,7 @@ export default function Settings() {
               Treat namespaces like topics of conversation. You can create as
               many as you like, and they can be used to organize your data.
             </p>
+
             <div
               className="mt-4 sm:mt-8 flex justify-center"
               {...getRootProps()}
@@ -294,6 +321,71 @@ export default function Settings() {
                 {uploadMessage ? uploadMessage : 'Upload files'}
               </button>
             </div>
+            <div>
+              <div className="flex items-center">
+                <label
+                  htmlFor="chunkSize"
+                  className="block text-sm font-medium leading-6 text-gray-300"
+                >
+                  Chunk size
+                </label>
+                <QuestionMarkCircleIcon
+                  className="ml-2 h-5 w-5 text-gray-300 hover:text-gray-400 cursor-pointer"
+                  onClick={() => setShowChunkSizeModal(true)}
+                />
+              </div>
+
+              <div className="w-full">
+                <input
+                  type="range"
+                  min={100}
+                  max={4000}
+                  step={100}
+                  value={chunkSize}
+                  onChange={(e) => setChunkSize(Number(e.target.value))}
+                  className="w-full"
+                />
+
+                <div className="text-center text-gray-100">{chunkSize}</div>
+              </div>
+            </div>
+
+            <ChunkSizeModal
+              open={showChunkSizeModal}
+              setOpen={setShowChunkSizeModal}
+            />
+            <div>
+              <div className="flex items-center">
+                <label
+                  htmlFor="overlapSize"
+                  className="block text-sm font-medium leading-6 text-gray-300"
+                >
+                  Overlap size
+                </label>
+                <QuestionMarkCircleIcon
+                  className="ml-2 h-5 w-5 text-gray-300 cursor-pointer hover:text-gray-400"
+                  onClick={() => setShowOverlapSizeModal(true)}
+                />
+              </div>
+
+              <div className="w-full">
+                <input
+                  type="range"
+                  min={0}
+                  max={50}
+                  step={5}
+                  value={overlapSize}
+                  onChange={(e) => setOverlapSize(Number(e.target.value))}
+                  className="w-full"
+                />
+                <div className="text-center text-gray-100">{overlapSize}%</div>
+              </div>
+            </div>
+            <OverlapSizeModal
+              open={showOverlapSizeModal}
+              setOpen={setShowOverlapSizeModal}
+            />
+
             {uploadMessage && (
               <div className="mt-4 sm:mt-8 grid grid-cols-1 gap-x-4 sm:gap-x-8 gap-y-4 sm:gap-y-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
@@ -303,6 +395,7 @@ export default function Settings() {
                   >
                     Namespace name
                   </label>
+
                   <div className="mt-2.5">
                     <input
                       type="text"
