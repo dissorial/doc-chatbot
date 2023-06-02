@@ -26,7 +26,7 @@ function classNames(...classes: string[]) {
 }
 
 export default function Home() {
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   const router = useRouter();
   const [query, setQuery] = useState<string>('');
@@ -340,7 +340,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="lg:pl-72">
+          <div className="lg:pl-72 h-screen">
             <Header
               setSidebarOpen={setSidebarOpen}
               userImage={userImage}
@@ -350,25 +350,13 @@ export default function Home() {
             <main className="flex flex-col">
               {nameSpaceHasChats && selectedNamespace ? (
                 <>
-                  <div className="overflow-y-auto flex-grow">
+                  <div className="overflow-y-auto flex-grow pb-36">
                     <MessageList
                       messages={messages.map(mapChatMessageToMessage)}
                       loading={loading}
                       messageListRef={messageListRef}
                       userImage={userImage}
                       userName={userName}
-                    />
-                  </div>
-
-                  <div className="flex justify-center">
-                    <ChatForm
-                      loading={loading}
-                      error={error}
-                      query={query}
-                      textAreaRef={textAreaRef}
-                      handleEnter={handleEnter}
-                      handleSubmit={handleSubmit}
-                      setQuery={setQuery}
                     />
                   </div>
                 </>
@@ -379,6 +367,19 @@ export default function Home() {
                     selectedNamespace={selectedNamespace}
                   />
                 </>
+              )}
+              {nameSpaceHasChats && selectedNamespace && (
+                <div className="fixed w-full bottom-0 flex bg-gradient-to-t from-gray-800 to-gray-800/0 justify-center lg:pr-72">
+                  <ChatForm
+                    loading={loading}
+                    error={error}
+                    query={query}
+                    textAreaRef={textAreaRef}
+                    handleEnter={handleEnter}
+                    handleSubmit={handleSubmit}
+                    setQuery={setQuery}
+                  />
+                </div>
               )}
             </main>
           </div>

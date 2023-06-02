@@ -2,39 +2,16 @@ import { OpenAI } from 'langchain/llms/openai';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { ConversationalRetrievalQAChain } from 'langchain/chains';
 
-// --------------------------------------------------
-
-// v1
-// const CONDENSE_PROMPT = `Given the chat history and a follow-up question, rephrase the follow-up question to be a standalone question.
-
-// Chat History:
-// {chat_history}
-// Follow-up input: {question}
-// Standalone question:`;
-
-// --------------------------------------------------
-
-// v2
-// const CONDENSE_PROMPT = `Given the chat history and a follow-up question, rephrase the follow-up question to be a standalone question that encompasses all necessary context from the chat history.
-
-// Chat History:
-// {chat_history}
-
-// Follow-up input: {question}
-
-// Make sure your standalone question is self-contained, clear, and specific. Rephrased standalone question:`;
-
-// --------------------------------------------------
-
-// v3
-const CONDENSE_PROMPT = `Condense the chat history and the follow-up question into a standalone question.
+const CONDENSE_PROMPT = `Given the chat history and a follow-up question, rephrase the follow-up question to be a standalone question that encompasses all necessary context from the chat history.
 
 Chat History:
 {chat_history}
 
 Follow-up input: {question}
 
-Rephrased standalone question:`;
+Make sure your standalone question is self-contained, clear, and specific. Rephrased standalone question:`;
+
+// --------------------------------------------------
 
 const QA_PROMPT = `You are an intelligent AI assistant designed to interpret and answer questions and instructions based on specific provided documents. The context from these documents has been processed and made accessible to you. 
 

@@ -31,7 +31,7 @@ function MessageList({
           {messages.map((message, index) => {
             const isApiMessage = message.type === 'apiMessage';
             const messageClasses = ` ${
-              isApiMessage ? 'bg-gray-700/50' : 'bg-gray-800/90'
+              isApiMessage ? 'bg-gray-700/50' : 'bg-gray-800'
             }`;
 
             return (
@@ -105,7 +105,7 @@ function MessageList({
         </div>
       </div>
       {loading && (
-        <div className="flex items-center justify-center h-32 w-full bg-gradient-to-b from-gray-900 via-gray-900/70 to-gray-800/30">
+        <div className="flex items-center justify-center h-32 w-full bg-gray-700/50">
           <div className="flex-shrink-0 p-1">
             <LoadingDots color="#04d9ff" />
           </div>
