@@ -14,6 +14,10 @@ const ListOfNamespaces = ({
   selectedNamespace: string;
   setSelectedNamespace: (namespace: string) => void;
 }) => {
+  const handleNamespaceClick = (namespace: string) => {
+    setSelectedNamespace(namespace);
+  };
+
   return (
     <li>
       <div className="text-xs sm:text-sm text-blue-400 font-semibold leading-6 ">
@@ -24,14 +28,13 @@ const ListOfNamespaces = ({
           <li key={namespace}>
             <Link
               href={`/namespace/${namespace}`}
-              key={namespace}
               className={classNames(
                 namespace === selectedNamespace
                   ? 'bg-gray-800 text-white'
                   : 'text-gray-400 hover:text-white hover:bg-gray-800',
                 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
               )}
-              onClick={() => setSelectedNamespace(namespace)}
+              onClick={() => handleNamespaceClick(namespace)}
             >
               <span className="truncate">{namespace}</span>
             </Link>

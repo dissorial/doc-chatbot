@@ -1,53 +1,45 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
+
+function useLocalStorage<T>(key: string, initialValue: T) {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window !== 'undefined') {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    }
+    return initialValue;
+  });
+
+  const setValue = (value: T) => {
+    setStoredValue(value);
+    localStorage.setItem(key, JSON.stringify(value));
+  };
+
+  return [storedValue, setValue] as const;
+}
 
 export function useChats(namespace: string, userEmail: string | undefined) {
-  const [chatList, setChatList] = useState<string[]>([]);
-  const [chatNames, setChatNames] = useState<{ [key: string]: string }>({});
+  const [chatList, setChatList] = useLocalStorage<string[]>(
+    `chatList-${namespace}`,
+    [],
+  );
+  const [chatNames, setChatNames] = useLocalStorage<{ [key: string]: string }>(
+    `chatNames-${namespace}`,
+    {},
+  );
 
   const [selectedChatId, setSelectedChatId] = useState<string>('');
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const chatListJSON = localStorage.getItem(`chatList-${namespace}`);
-      if (chatListJSON) {
-        setChatList(JSON.parse(chatListJSON));
-      } else {
-        setChatList([]);
-      }
-    }
-  }, [namespace]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const chatNamesJSON = localStorage.getItem(`chatNames-${namespace}`);
-      if (chatNamesJSON) {
-        setChatNames(JSON.parse(chatNamesJSON));
-      } else {
-        setChatNames({});
-      }
-    }
-  }, [namespace]);
 
   function updateChatName(chatId: string, newChatName: string) {
     const updatedChatNames = { ...chatNames, [chatId]: newChatName };
     setChatNames(updatedChatNames);
-    localStorage.setItem(
-      `chatNames-${namespace}`,
-      JSON.stringify(updatedChatNames),
-    );
   }
 
   async function createChat() {
     const newChatId = uuidv4();
     const updatedChatList = [...chatList, newChatId];
     setChatList(updatedChatList);
-
-    localStorage.setItem(
-      `chatList-${namespace}`,
-      JSON.stringify(updatedChatList),
-    );
 
     try {
       await axios.post('/api/create-chat', {
@@ -66,10 +58,6 @@ export function useChats(namespace: string, userEmail: string | undefined) {
       (chatId) => chatId !== chatIdToDelete,
     );
     setChatList(updatedChatList);
-    localStorage.setItem(
-      `chatList-${namespace}`,
-      JSON.stringify(updatedChatList),
-    );
 
     try {
       await axios.delete(`/api/delete-chat`, {
