@@ -1,11 +1,11 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
+import { SourceDoc } from '@/types';
+import connectDB from '@/utils/mongoConnection';
 import { makeChain } from '@/utils/makechain';
 import { pinecone } from '@/utils/pinecone-client';
-import connectDB from '@/utils/mongoConnection';
 import Message from '@/models/Message';
-import { SourceDoc } from '@/types';
 
 export default async function handler(
   req: NextApiRequest,

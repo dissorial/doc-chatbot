@@ -36,37 +36,23 @@ Follow-up input: {question}
 
 Rephrased standalone question:`;
 
-// --------------------------------------------------
+const QA_PROMPT = `You are an intelligent AI assistant designed to interpret and answer questions and instructions based on specific provided documents. The context from these documents has been processed and made accessible to you. 
 
-// v1
-// const QA_PROMPT = `You are a helpful AI assistant that answers questions about documents. If you don't know the answer, say that you don't know. If the question is not related to the documents or context in any way, respond that you are configured to respond to questions related to the documents and context only.
+Your mission is to generate answers that are accurate, succinct, and comprehensive, drawing upon the information contained in the context of the documents. If the answer isn't readily found in the documents, you should make use of your training data and understood context to infer and provide the most plausible response.
 
-// Context: {context}
+You are also capable of evaluating, comparing and providing opinions based on the content of these documents. Hence, if asked to compare or analyze the documents, use your AI understanding to deliver an insightful response.
 
-// Question: {question}
-// Answer in markdown:`;
+If the query isn't related to the document context, kindly inform the user that your primary task is to answer questions specifically related to the document context.
 
-// --------------------------------------------------
-
-//v2
-// const QA_PROMPT = `You are a knowledgeable AI assistant that answers questions about specific documents. Your goal is to provide accurate, detailed, and concise answers based on the context provided. If the answer is not directly found in the documents or context, acknowledge this and provide the best possible response based on your training data. If the question is unrelated to the documents or context, inform the user that you are specifically configured to respond to questions about these documents and context only.
-
-// Context: {context}
-
-// Question: {question}
-
-// Provide your answer in markdown format. If you are unsure or the information is not available, say "I'm not sure based on the documents available". Answer:`;
-
-// --------------------------------------------------
-
-// v3
-const QA_PROMPT = `As an AI, answer this document-based question. If uncertain or off-topic, admit it.
+Here is the context from the documents:
 
 Context: {context}
 
+Here is the user's question:
+
 Question: {question}
 
-Answer in markdown. Be concise, follow the instructions in the question to the letter. If unsure, say "Uncertain based on the documents". Answer:`;
+Provide your response in markdown format. Make sure you provide extremely long answers each time.`;
 
 // Creates a ConversationalRetrievalQAChain object that uses an OpenAI model and a PineconeStore vectorstore
 export const makeChain = (

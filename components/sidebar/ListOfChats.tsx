@@ -22,6 +22,24 @@ const ListOfChats = ({
   updateChatName: (chatId: string, newChatName: string) => void;
   deleteChat: (chatId: string) => void;
 }) => {
+  const handleChatClick = (chatId: string) => {
+    setChatId(chatId);
+    setSelectedChatId(chatId);
+  };
+
+  const handleEditChatName = (e: React.MouseEvent, chatId: string) => {
+    e.stopPropagation();
+    const newChatName = prompt('Enter a new name for this chat:');
+    if (newChatName) {
+      updateChatName(chatId, newChatName);
+    }
+  };
+
+  const handleDeleteChat = (e: React.MouseEvent, chatId: string) => {
+    e.stopPropagation();
+    deleteChat(chatId);
+  };
+
   return (
     <ul role="list" className="-mx-2 space-y-1 mt-2 px-2">
       <div className="text-xs sm:text-sm font-semibold leading-6 text-blue-400">
@@ -36,33 +54,21 @@ const ListOfChats = ({
               : 'text-gray-400 hover:text-white hover:bg-gray-800',
             'group flex w-full gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer',
           )}
-          onClick={() => {
-            setChatId(chatId);
-            setSelectedChatId(chatId);
-          }}
+          onClick={() => handleChatClick(chatId)}
         >
           {chatNames[chatId] || `Chat ${index}`}
           {chatId === selectedChatId && (
             <div className="ml-auto">
               <button
                 className="text-gray-300 hover:text-gray-400 ml-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const newChatName = prompt('Enter a new name for this chat:');
-                  if (newChatName) {
-                    updateChatName(chatId, newChatName);
-                  }
-                }}
+                onClick={(e) => handleEditChatName(e, chatId)}
               >
                 <PencilIcon className="h-4 w-4" />
               </button>
 
               <button
                 className="text-red-500 hover:text-red-600 ml-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  deleteChat(chatId);
-                }}
+                onClick={(e) => handleDeleteChat(e, chatId)}
               >
                 <TrashIcon className="h-4 w-4" />
               </button>
