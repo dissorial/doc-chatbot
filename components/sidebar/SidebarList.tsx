@@ -9,6 +9,7 @@ import SourceDocumentsToggle from './SourceDocumentsToggle';
 import ModelTemperature from './ModelTemperature';
 
 interface SidebarListProps {
+  createChat: () => string;
   selectedNamespace: string;
   returnSourceDocuments: boolean;
   setReturnSourceDocuments: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,7 +18,6 @@ interface SidebarListProps {
   chatList: string[];
   selectedChatId: string;
   setChatId: (value: string) => void;
-  createChat: () => Promise<string>;
   setSelectedChatId: React.Dispatch<React.SetStateAction<string>>;
   nameSpaceHasChats: boolean;
   chatNames: Record<string, string>;
@@ -66,7 +66,7 @@ const SidebarList: React.FC<SidebarListProps> = ({
                 buttonType="primary"
                 buttonText="New chat"
                 onClick={async () => {
-                  const newChatId = await createChat();
+                  const newChatId = createChat();
                   setChatId(newChatId);
                   setSelectedChatId(newChatId);
                 }}
@@ -93,10 +93,7 @@ const SidebarList: React.FC<SidebarListProps> = ({
                 : 'Select a namespace to display chats'}
             </div>
           )}
-
-          {/* desktop */}
         </li>
-        {/* desktop */}
         <ListOfNamespaces
           namespaces={namespaces}
           selectedNamespace={selectedNamespace}
@@ -104,7 +101,6 @@ const SidebarList: React.FC<SidebarListProps> = ({
         />
       </ul>
 
-      {/* desktop */}
       <Button
         buttonType="secondary"
         buttonText="Settings"

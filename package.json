@@ -29,6 +29,7 @@
     "formidable": "^2.1.1",
     "heroicons": "^2.0.17",
     "langchain": "0.0.82",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.125.0",
     "mammoth": "^1.5.1",
     "mongoose": "^7.1.0",
@@ -47,6 +48,7 @@
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/formidable": "^2.0.5",
+    "@types/lodash": "^4.14.195",
     "@types/mongodb": "^4.0.7",
     "@types/mongoose": "^5.11.97",
     "@types/multiparty": "^0.0.33",

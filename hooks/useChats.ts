@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import axios from 'axios';
 
 function useLocalStorage<T>(key: string, initialValue: T) {
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -20,14 +19,20 @@ function useLocalStorage<T>(key: string, initialValue: T) {
 }
 
 export function useChats(namespace: string, userEmail: string | undefined) {
-  const [chatList, setChatList] = useLocalStorage<string[]>(
-    `chatList-${namespace}`,
-    [],
+  const [allChats, setAllChats] = useLocalStorage<
+    { namespace: string; chatId: string }[]
+  >('allChats', []);
+  const chatList = useMemo(
+    () => allChats.filter((chat) => chat.namespace === namespace),
+    [allChats, namespace],
   );
+
   const [chatNames, setChatNames] = useLocalStorage<{ [key: string]: string }>(
     `chatNames-${namespace}`,
     {},
   );
+
+  console.log(chatList, 'chatList');
 
   const [selectedChatId, setSelectedChatId] = useState<string>('');
 
@@ -36,47 +41,36 @@ export function useChats(namespace: string, userEmail: string | undefined) {
     setChatNames(updatedChatNames);
   }
 
-  async function createChat() {
+  function createChat() {
     const newChatId = uuidv4();
-    const updatedChatList = [...chatList, newChatId];
-    setChatList(updatedChatList);
+    const updatedChatList = [...chatList, { namespace, chatId: newChatId }];
+    setAllChats(updatedChatList);
 
-    try {
-      await axios.post('/api/create-chat', {
-        chatId: newChatId,
-        namespace,
-        userEmail,
-      });
-    } catch (error) {
-      console.error('Failed to create new chat:', error);
-    }
     return newChatId;
   }
 
   async function deleteChat(chatIdToDelete: string) {
     const updatedChatList = chatList.filter(
-      (chatId) => chatId !== chatIdToDelete,
+      (chat) => chat.chatId !== chatIdToDelete,
     );
-    setChatList(updatedChatList);
-
-    try {
-      await axios.delete(`/api/delete-chat`, {
-        data: {
-          chatId: chatIdToDelete,
-          namespace,
-          userEmail,
-        },
-      });
-    } catch (error) {
-      console.error('Failed to delete chat:', error);
-    }
+    setAllChats(updatedChatList);
 
     if (chatIdToDelete === selectedChatId) {
       const newSelectedChatId =
-        updatedChatList.length > 0 ? updatedChatList[0] : '';
+        updatedChatList.length > 0 ? updatedChatList[0].chatId : '';
       setSelectedChatId(newSelectedChatId);
     }
   }
+
+  const filteredChatList = chatList.filter(
+    (chat) => chat.namespace === namespace,
+  );
+
+  console.log(filteredChatList, 'filteredChatList');
+
+  useEffect(() => {
+    console.log('selectedChatId changed:', selectedChatId);
+  }, [selectedChatId]);
 
   return {
     chatList,
@@ -87,5 +81,6 @@ export function useChats(namespace: string, userEmail: string | undefined) {
     chatNames,
     updateChatName,
     userEmail,
+    filteredChatList,
   };
 }

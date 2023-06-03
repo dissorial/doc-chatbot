@@ -11,11 +11,10 @@ export default function useNamespaces(userEmail: string | undefined) {
     if (userEmail) {
       const fetchNamespaces = async () => {
         try {
-          const response = await fetch(
-            `/api/getNamespaces?userEmail=${userEmail}`,
-          );
+          const response = await fetch(`/api/getNamespaces`);
           const data = await response.json();
 
+          console.log(data);
           if (response.ok) {
             setNamespaces(data);
           } else {

@@ -54,13 +54,14 @@ export default function Home() {
     deleteChat,
     chatNames,
     updateChatName,
+    filteredChatList,
   } = useChats(selectedNamespace, userEmail);
 
   const nameSpaceHasChats = chatList.length > 0;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [messageState, setMessageState] = useState<{
+  const [conversation, setConversation] = useState<{
     messages: ChatMessage[];
     pending?: string;
     history: [string, string][];
@@ -85,7 +86,7 @@ export default function Home() {
     };
   }
 
-  const { messages, history } = messageState;
+  const { messages, history } = conversation;
 
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -103,8 +104,8 @@ export default function Home() {
         pairedMessages.push([data[i], data[i + 1]]);
       }
 
-      setMessageState((state) => ({
-        ...state,
+      setConversation((conversation) => ({
+        ...conversation,
         messages: data.map((message: any) => ({
           type: message.sender === 'user' ? 'userMessage' : 'apiMessage',
           message: message.content,
@@ -137,7 +138,7 @@ export default function Home() {
 
   useEffect(() => {
     if (selectedNamespace && chatList.length > 0) {
-      setSelectedChatId(chatList[0]);
+      setSelectedChatId(chatList[0].chatId);
     }
   }, [selectedNamespace, chatList, setSelectedChatId]);
 
@@ -165,10 +166,10 @@ export default function Home() {
     }
 
     const question = query.trim();
-    setMessageState((state) => ({
-      ...state,
+    setConversation((conversation) => ({
+      ...conversation,
       messages: [
-        ...state.messages,
+        ...conversation.messages,
         {
           type: 'userMessage',
           message: question,
@@ -200,17 +201,17 @@ export default function Home() {
       if (data.error) {
         setError(data.error);
       } else {
-        setMessageState((state) => ({
-          ...state,
+        setConversation((conversation) => ({
+          ...conversation,
           messages: [
-            ...state.messages,
+            ...conversation.messages,
             {
               type: 'apiMessage',
               message: data.text,
               sourceDocs: data.sourceDocuments,
             },
           ],
-          history: [...state.history, [question, data.text]],
+          history: [...conversation.history, [question, data.text]],
         }));
       }
 
@@ -291,11 +292,11 @@ export default function Home() {
                     </Transition.Child>
                     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
                       <div className="flex h-16 shrink-0 items-center"></div>
-                      <SidebarList
+                      {/* <SidebarList
                         selectedNamespace={selectedNamespace}
                         setSelectedNamespace={setSelectedNamespace}
                         namespaces={namespaces}
-                        chatList={chatList}
+                        chatList={filteredChatList.map((chat) => chat.chatId)}
                         selectedChatId={selectedChatId}
                         setChatId={setChatId}
                         setSelectedChatId={setSelectedChatId}
@@ -308,7 +309,7 @@ export default function Home() {
                         setModelTemperature={setModelTemperature}
                         createChat={createChat}
                         nameSpaceHasChats={nameSpaceHasChats}
-                      />
+                      /> */}
                     </div>
                   </Dialog.Panel>
                 </Transition.Child>
@@ -320,10 +321,11 @@ export default function Home() {
             <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 border-r border-gray-800">
               <div className="flex h-16 shrink-0 items-center"></div>
               <SidebarList
+                createChat={createChat}
                 selectedNamespace={selectedNamespace}
                 setSelectedNamespace={setSelectedNamespace}
                 namespaces={namespaces}
-                chatList={chatList}
+                chatList={filteredChatList.map((chat) => chat.chatId)}
                 selectedChatId={selectedChatId}
                 setChatId={setChatId}
                 setSelectedChatId={setSelectedChatId}
@@ -334,7 +336,6 @@ export default function Home() {
                 setReturnSourceDocuments={setReturnSourceDocuments}
                 modelTemperature={modelTemperature}
                 setModelTemperature={setModelTemperature}
-                createChat={createChat}
                 nameSpaceHasChats={nameSpaceHasChats}
               />
             </div>

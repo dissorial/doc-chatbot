@@ -1,23 +1,32 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@/utils/mongoConnection';
-import { getSession } from 'next-auth/react';
-import Namespace from '@/models/Namespace';
+import { pinecone } from '@/utils/pinecone-client';
+
+type NamespaceSummary = {
+  vectorCount: number;
+};
 
 const getNamespaces = async (req: NextApiRequest, res: NextApiResponse) => {
+  const targetIndex = process.env.PINECONE_INDEX_NAME ?? '';
+
   try {
-    const session = await getSession({ req });
+    const index = pinecone.Index(targetIndex);
 
-    if (!session) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
+    const describeIndexStatsQuery = {
+      describeIndexStatsRequest: {
+        filter: {},
+      },
+    };
 
-    const userEmail = req.query.userEmail as string;
+    const indexStatsResponse = await index.describeIndexStats(
+      describeIndexStatsQuery,
+    );
+    const namespaces = Object.keys(
+      indexStatsResponse.namespaces as { [key: string]: NamespaceSummary },
+    );
 
-    await connectDB();
-    const userNamespaces = await Namespace.find({ userEmail });
-    const namespaceNames = userNamespaces.map((namespace) => namespace.name);
+    console.log('Namespaces:', namespaces);
 
-    res.status(200).json(namespaceNames);
+    res.status(200).json(namespaces);
   } catch (error) {
     console.log('error', error);
     res.status(500).json({ message: 'Failed to get namespaces' });
