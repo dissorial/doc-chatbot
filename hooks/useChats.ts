@@ -1,23 +1,7 @@
 import { ChatMessage } from '@/types/chat';
 import { useState, useMemo, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-
-function useLocalStorage<T>(key: string, initialValue: T) {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window !== 'undefined') {
-      const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    }
-    return initialValue;
-  });
-
-  const setValue = (value: T) => {
-    setStoredValue(value);
-    localStorage.setItem(key, JSON.stringify(value));
-  };
-
-  return [storedValue, setValue] as const;
-}
+import { useLocalStorage } from '../libs/localStorage';
 
 export function useChats(namespace: string) {
   const [allConversations, setAllConversations] = useLocalStorage<{

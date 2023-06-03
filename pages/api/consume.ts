@@ -8,8 +8,6 @@ import { TextLoader } from 'langchain/document_loaders/fs/text';
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import { pinecone } from '@/utils/pinecone-client';
-import Namespace from '@/models/Namespace';
-import connectDB from '@/utils/mongoConnection';
 
 const filePath = process.env.NODE_ENV === 'production' ? '/tmp' : 'tmp';
 
@@ -17,25 +15,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { namespaceName, userEmail, chunkSize, overlapSize } = req.query;
+  const { namespaceName, chunkSize, overlapSize } = req.query;
 
   const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
 
   try {
-    await connectDB();
-
-    const existingNamespace = await Namespace.findOne({
-      name: namespaceName as string,
-    });
-
-    if (!existingNamespace) {
-      const newNamespace = new Namespace({
-        userEmail: userEmail as string,
-        name: namespaceName as string,
-      });
-      await newNamespace.save();
-    }
-
     // Load PDF files from the specified directory
     const directoryLoader = new DirectoryLoader(filePath, {
       '.pdf': (path) => new PDFLoader(path),
