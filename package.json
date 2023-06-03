@@ -13,6 +13,7 @@
     "lint": "eslint --ignore-path .gitignore \"**/*.+(ts|js|tsx)\"",
     "format": "prettier --ignore-path .gitignore \"**/*.+(ts|js|tsx)\" --write",
     "delete-namespace": "tsx -r dotenv/config scripts/delete-namespace.ts",
+    "getns": "tsx -r dotenv/config scripts/getns.ts",
     "lang": "tsx -r dotenv/config scripts/lang.ts"
   },
   "dependencies": {
