@@ -11,10 +11,7 @@
     "start": "next start",
     "type-check": "tsc --noEmit",
     "lint": "eslint --ignore-path .gitignore \"**/*.+(ts|js|tsx)\"",
-    "format": "prettier --ignore-path .gitignore \"**/*.+(ts|js|tsx)\" --write",
-    "delete-namespace": "tsx -r dotenv/config scripts/delete-namespace.ts",
-    "getns": "tsx -r dotenv/config scripts/getns.ts",
-    "lang": "tsx -r dotenv/config scripts/lang.ts"
+    "format": "prettier --ignore-path .gitignore \"**/*.+(ts|js|tsx)\" --write"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
@@ -23,7 +20,6 @@
     "@pinecone-database/pinecone": "0.0.14",
     "@radix-ui/react-accordion": "^1.1.1",
     "@tailwindcss/forms": "^0.5.3",
-    "axios": "^1.4.0",
     "clsx": "^1.2.1",
     "dotenv": "^16.0.3",
     "formidable": "^2.1.1",
@@ -31,8 +27,6 @@
     "langchain": "0.0.82",
     "lodash": "^4.17.21",
     "lucide-react": "^0.125.0",
-    "mammoth": "^1.5.1",
-    "mongoose": "^7.1.0",
     "multiparty": "^4.2.3",
     "next": "13.2.3",
     "next-auth": "^4.22.1",
@@ -46,11 +40,8 @@
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
     "@types/formidable": "^2.0.5",
     "@types/lodash": "^4.14.195",
-    "@types/mongodb": "^4.0.7",
-    "@types/mongoose": "^5.11.97",
     "@types/multiparty": "^0.0.33",
     "@types/node": "^18.14.6",
     "@types/react": "^18.0.28",
@@ -71,7 +62,6 @@
   "keywords": [
     "gpt4",
     "gpt-3.5",
-    "mongodb",
     "pinecone",
     "typescript",
     "nextjs",
