@@ -15,7 +15,6 @@ interface SidebarListProps {
   setModelTemperature: React.Dispatch<React.SetStateAction<number>>;
   filteredChatList: string[];
   selectedChatId: string;
-  setChatId: (value: string) => void;
   setSelectedChatId: React.Dispatch<React.SetStateAction<string>>;
   nameSpaceHasChats: boolean;
   chatNames: Record<string, string>;
@@ -33,7 +32,6 @@ const SidebarList: React.FC<SidebarListProps> = ({
   setModelTemperature,
   filteredChatList,
   selectedChatId,
-  setChatId,
   createChat,
   setSelectedChatId,
   nameSpaceHasChats,
@@ -63,7 +61,6 @@ const SidebarList: React.FC<SidebarListProps> = ({
               buttonText="New chat"
               onClick={async () => {
                 const newChatId = createChat();
-                setChatId(newChatId);
                 setSelectedChatId(newChatId);
               }}
               icon={PlusCircleIcon}
@@ -82,7 +79,7 @@ const SidebarList: React.FC<SidebarListProps> = ({
         />
       </div>
 
-      <div className="px-4  text-xs sm:text-sm font-semibold leading-6 text-blue-400">
+      <div className="px-4 text-xs sm:text-sm font-semibold leading-6 text-blue-400">
         Your chats
       </div>
       <div className="px-4 flex-grow overflow-y-auto">
@@ -90,7 +87,6 @@ const SidebarList: React.FC<SidebarListProps> = ({
           <ListOfChats
             filteredChatList={filteredChatList}
             selectedChatId={selectedChatId}
-            setChatId={setChatId}
             setSelectedChatId={setSelectedChatId}
             chatNames={chatNames}
             updateChatName={updateChatName}

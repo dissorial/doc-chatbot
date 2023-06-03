@@ -82,15 +82,10 @@ export default function Home() {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const fetchChatHistory = useCallback(() => {
+    setLoading(true);
+
     try {
       const conversations = getConversation(selectedChatId);
-
-      console.log(
-        'Chat ID:',
-        selectedChatId,
-        'History:',
-        conversations.history,
-      );
 
       if (!conversations || !conversations.messages) {
         console.error('Failed to fetch chat history: No conversations found.');
@@ -121,14 +116,22 @@ export default function Home() {
       }));
     } catch (error) {
       console.error('Failed to fetch chat history:', error);
+    } finally {
+      setLoading(false);
     }
   }, [selectedChatId, getConversation]);
 
   useEffect(() => {
-    if (selectedNamespace && chatList.length > 0) {
+    if (selectedNamespace && chatList.length > 0 && !selectedChatId) {
       setSelectedChatId(chatList[0].chatId);
     }
-  }, [selectedNamespace, chatList, setSelectedChatId]);
+  }, [selectedNamespace, chatList, selectedChatId, setSelectedChatId]);
+
+  useEffect(() => {
+    if (chatList.length > 0) {
+      setSelectedChatId(chatList[chatList.length - 1].chatId);
+    }
+  }, [selectedNamespace, setSelectedChatId, chatList]);
 
   useEffect(() => {
     if (selectedChatId) {
@@ -165,12 +168,6 @@ export default function Home() {
     setQuery('');
 
     const conversation = getConversation(selectedChatId);
-    console.log(
-      'Sending to API - Chat ID:',
-      selectedChatId,
-      'History:',
-      conversation.history,
-    );
 
     const response = await fetch('/api/chat', {
       method: 'POST',
@@ -235,7 +232,7 @@ export default function Home() {
 
   return (
     <>
-      {status === 'loading' ? (
+      {loading ? (
         <LoadingState />
       ) : (
         <div className="h-full">
@@ -298,7 +295,6 @@ export default function Home() {
                           (chat) => chat.chatId,
                         )}
                         selectedChatId={selectedChatId}
-                        setChatId={setSelectedChatId}
                         setSelectedChatId={setSelectedChatId}
                         chatNames={chatNames}
                         updateChatName={updateChatName}
@@ -326,7 +322,6 @@ export default function Home() {
                 namespaces={namespaces}
                 filteredChatList={filteredChatList.map((chat) => chat.chatId)}
                 selectedChatId={selectedChatId}
-                setChatId={setSelectedChatId}
                 setSelectedChatId={setSelectedChatId}
                 chatNames={chatNames}
                 updateChatName={updateChatName}

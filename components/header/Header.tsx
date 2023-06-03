@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
         </span>
       </div>
 
-      <div className="min-w-[100px]">
+      <div className="w-fit">
         <Button
           buttonType="secondary"
           buttonText="Settings"

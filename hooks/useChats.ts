@@ -68,8 +68,15 @@ export function useChats(namespace: string) {
     setAllChats(updatedAllChats);
 
     if (chatIdToDelete === selectedChatId) {
-      const newSelectedChatId =
-        updatedAllChats.length > 0 ? updatedAllChats[0].chatId : '';
+      const deletedChatIndex = allChats.findIndex(
+        (chat) => chat.chatId === chatIdToDelete,
+      );
+      let newSelectedChatId = '';
+      if (updatedAllChats[deletedChatIndex]) {
+        newSelectedChatId = updatedAllChats[deletedChatIndex].chatId;
+      } else if (deletedChatIndex > 0) {
+        newSelectedChatId = updatedAllChats[deletedChatIndex - 1].chatId;
+      }
       setSelectedChatId(newSelectedChatId);
     }
   }

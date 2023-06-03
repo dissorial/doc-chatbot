@@ -8,7 +8,6 @@ function classNames(...classes: string[]) {
 const ListOfChats = ({
   filteredChatList,
   selectedChatId,
-  setChatId,
   setSelectedChatId,
   chatNames,
   updateChatName,
@@ -16,14 +15,12 @@ const ListOfChats = ({
 }: {
   filteredChatList: string[];
   selectedChatId: string;
-  setChatId: (chatId: string) => void;
   setSelectedChatId: (chatId: string) => void;
   chatNames: { [chatId: string]: string };
   updateChatName: (chatId: string, newChatName: string) => void;
   deleteChat: (chatId: string) => void;
 }) => {
   const handleChatClick = (chatId: string) => {
-    setChatId(chatId);
     setSelectedChatId(chatId);
   };
 
@@ -41,7 +38,7 @@ const ListOfChats = ({
   };
 
   return (
-    <ul role="list" className="-mx-2 mt-2 px-2 pb-6">
+    <ul role="list" className="-mx-2 mt-2 px-2 pb-6 space-y-1">
       {[...filteredChatList].reverse().map((chatId, index) => (
         <li
           key={chatId}
