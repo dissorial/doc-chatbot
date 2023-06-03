@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { ChatMessage } from '@/types/chat';
+import { ConversationMessage } from '@/types/ConversationMessage';
 import { Document } from 'langchain/document';
 import { Message } from '@/types';
 import useNamespaces from '@/hooks/useNamespaces';
@@ -49,7 +49,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [conversation, setConversation] = useState<{
-    messages: ChatMessage[];
+    messages: ConversationMessage[];
     pending?: string;
     history: [string, string][];
     pendingSourceDocs?: Document[];
@@ -63,10 +63,12 @@ export default function Home() {
     history: [],
   });
 
-  function mapChatMessageToMessage(chatMessage: ChatMessage): Message {
+  function mapConversationMessageToMessage(
+    ConversationMessage: ConversationMessage,
+  ): Message {
     return {
-      ...chatMessage,
-      sourceDocs: chatMessage.sourceDocs?.map((doc) => ({
+      ...ConversationMessage,
+      sourceDocs: ConversationMessage.sourceDocs?.map((doc) => ({
         pageContent: doc.pageContent,
         metadata: { source: doc.metadata.source },
       })),
@@ -81,6 +83,13 @@ export default function Home() {
   const fetchChatHistory = useCallback(() => {
     try {
       const conversations = getConversation(selectedChatId);
+
+      console.log(
+        'Chat ID:',
+        selectedChatId,
+        'History:',
+        conversations.history,
+      );
 
       if (!conversations || !conversations.messages) {
         console.error('Failed to fetch chat history: No conversations found.');
@@ -147,7 +156,7 @@ export default function Home() {
         {
           type: 'userMessage',
           message: question,
-        } as ChatMessage,
+        } as ConversationMessage,
       ],
     }));
 
@@ -155,6 +164,12 @@ export default function Home() {
     setQuery('');
 
     const conversation = getConversation(selectedChatId);
+    console.log(
+      'Sending to API - Chat ID:',
+      selectedChatId,
+      'History:',
+      conversation.history,
+    );
 
     const response = await fetch('/api/chat', {
       method: 'POST',
@@ -192,7 +207,7 @@ export default function Home() {
                       }),
                   )
                 : undefined,
-            } as ChatMessage,
+            } as ConversationMessage,
           ],
           history: [
             ...prevConversation.history,
@@ -330,7 +345,7 @@ export default function Home() {
                 <>
                   <div className="overflow-y-auto flex-grow pb-36">
                     <MessageList
-                      messages={messages.map(mapChatMessageToMessage)}
+                      messages={messages.map(mapConversationMessageToMessage)}
                       loading={loading}
                       messageListRef={messageListRef}
                     />

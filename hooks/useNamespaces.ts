@@ -13,7 +13,6 @@ export default function useNamespaces() {
         const response = await fetch(`/api/getNamespaces`);
         const data = await response.json();
 
-        console.log(data);
         if (response.ok) {
           setNamespaces(data);
         } else {

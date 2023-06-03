@@ -24,8 +24,6 @@ const getNamespaces = async (req: NextApiRequest, res: NextApiResponse) => {
       indexStatsResponse.namespaces as { [key: string]: NamespaceSummary },
     );
 
-    console.log('Namespaces:', namespaces);
-
     res.status(200).json(namespaces);
   } catch (error) {
     console.log('error', error);

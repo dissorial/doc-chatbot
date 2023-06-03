@@ -53,7 +53,7 @@ export default function Settings() {
   const handleDelete = async (namespace: string) => {
     try {
       const response = await fetch(
-        `/api/deleteNamespace?namespace=${namespace}&userEmail=${userEmail}`,
+        `/api/deleteNamespace?namespace=${namespace}`,
         {
           method: 'DELETE',
         },

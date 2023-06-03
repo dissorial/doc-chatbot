@@ -28,7 +28,6 @@ export default async function handler(
   }
 
   const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
-
   try {
     const index = pinecone.Index(PINECONE_INDEX_NAME);
 

@@ -1,15 +1,12 @@
 import { pinecone } from '@/utils/pinecone-client';
 import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@/utils/mongoConnection';
-import Namespace from '@/models/Namespace';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { namespace, userEmail } = req.query as {
+  const { namespace } = req.query as {
     namespace: string;
-    userEmail: string;
   };
 
   const targetIndex = process.env.PINECONE_INDEX_NAME ?? '';
@@ -23,8 +20,6 @@ export default async function handler(
       },
     });
 
-    await connectDB();
-    await Namespace.deleteOne({ name: namespace, userEmail });
     res.status(200).json({ message: 'Namespace deleted successfully.' });
   } catch (error) {
     console.log('error', error);

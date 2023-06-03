@@ -1,6 +1,6 @@
 import { Document } from 'langchain/document';
 
-export type ChatMessage = {
+export type ConversationMessage = {
   type: 'apiMessage' | 'userMessage';
   message: string;
   isStreaming?: boolean;

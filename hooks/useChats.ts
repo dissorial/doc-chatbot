@@ -1,11 +1,14 @@
-import { ChatMessage } from '@/types/chat';
+import { ConversationMessage } from '@/types/ConversationMessage';
 import { useState, useMemo, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useLocalStorage } from '../libs/localStorage';
 
 export function useChats(namespace: string) {
   const [allConversations, setAllConversations] = useLocalStorage<{
-    [key: string]: { messages: ChatMessage[]; history: [string, string][] };
+    [key: string]: {
+      messages: ConversationMessage[];
+      history: [string, string][];
+    };
   }>('allConversations', {});
 
   const [allChats, setAllChats] = useLocalStorage<
@@ -33,7 +36,10 @@ export function useChats(namespace: string) {
 
   function updateConversation(
     chatId: string,
-    conversation: { messages: ChatMessage[]; history: [string, string][] },
+    conversation: {
+      messages: ConversationMessage[];
+      history: [string, string][];
+    },
   ) {
     const updatedConversations = {
       ...allConversations,

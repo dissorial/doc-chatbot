@@ -14,16 +14,9 @@ interface MessageListProps {
   messages: Message[];
   loading: boolean;
   messageListRef: React.RefObject<HTMLDivElement>;
-  userImage?: string | null;
-  userName?: string | null;
 }
 
-function MessageList({
-  messages,
-  loading,
-  messageListRef,
-  userName,
-}: MessageListProps) {
+function MessageList({ messages, loading, messageListRef }: MessageListProps) {
   return (
     <>
       <div className="overflow-y-auto">
@@ -46,7 +39,7 @@ function MessageList({
                             : 'bg-purple-400/10 text-purple-400 ring-purple-400/30'
                         }`}
                       >
-                        {isApiMessage ? 'pdf-chatbot' : userName}
+                        {isApiMessage ? 'AI' : 'YOU'}
                       </span>
                       <div className="mx-auto max-w-full">
                         <ReactMarkdown
