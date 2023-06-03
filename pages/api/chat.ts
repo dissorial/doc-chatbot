@@ -1,11 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
-import { SourceDoc } from '@/types';
-import connectDB from '@/utils/mongoConnection';
 import { makeChain } from '@/utils/makechain';
 import { pinecone } from '@/utils/pinecone-client';
-import Message from '@/models/Message';
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,7 +13,6 @@ export default async function handler(
     history,
     chatId,
     selectedNamespace,
-    userEmail,
     returnSourceDocuments,
     modelTemperature,
   } = req.body;
@@ -30,8 +26,6 @@ export default async function handler(
   if (!question) {
     return res.status(400).json({ message: 'No question in the request' });
   }
-
-  await connectDB();
 
   const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
 
@@ -47,16 +41,6 @@ export default async function handler(
       },
     );
 
-    const userMessage = new Message({
-      sender: 'user',
-      content: sanitizedQuestion,
-      chatId: chatId,
-      namespace: selectedNamespace,
-      userEmail: userEmail,
-    });
-
-    await userMessage.save();
-
     const chain = makeChain(
       vectorStore,
       returnSourceDocuments,
@@ -66,22 +50,6 @@ export default async function handler(
       question: sanitizedQuestion,
       chat_history: history || [],
     });
-
-    const botMessage = new Message({
-      sender: 'bot',
-      content: response.text.toString(),
-      chatId: chatId,
-      namespace: selectedNamespace,
-      userEmail: userEmail,
-      sourceDocs: response.sourceDocuments
-        ? response.sourceDocuments.map((doc: SourceDoc) => ({
-            pageContent: doc.pageContent,
-            metadata: { source: doc.metadata.source },
-          }))
-        : [],
-    });
-
-    await botMessage.save();
 
     res
       .status(200)

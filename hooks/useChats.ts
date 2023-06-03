@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { ChatMessage } from '@/types/chat';
+import { useState, useMemo, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 function useLocalStorage<T>(key: string, initialValue: T) {
@@ -18,10 +19,15 @@ function useLocalStorage<T>(key: string, initialValue: T) {
   return [storedValue, setValue] as const;
 }
 
-export function useChats(namespace: string, userEmail: string | undefined) {
+export function useChats(namespace: string) {
+  const [allConversations, setAllConversations] = useLocalStorage<{
+    [key: string]: { messages: ChatMessage[]; history: [string, string][] };
+  }>('allConversations', {});
+
   const [allChats, setAllChats] = useLocalStorage<
     { namespace: string; chatId: string }[]
   >('allChats', []);
+
   const chatList = useMemo(
     () => allChats.filter((chat) => chat.namespace === namespace),
     [allChats, namespace],
@@ -32,9 +38,25 @@ export function useChats(namespace: string, userEmail: string | undefined) {
     {},
   );
 
-  console.log(chatList, 'chatList');
-
   const [selectedChatId, setSelectedChatId] = useState<string>('');
+
+  const getConversation = useCallback(
+    (chatId: string) => {
+      return allConversations[chatId] || { messages: [], history: [] };
+    },
+    [allConversations],
+  );
+
+  function updateConversation(
+    chatId: string,
+    conversation: { messages: ChatMessage[]; history: [string, string][] },
+  ) {
+    const updatedConversations = {
+      ...allConversations,
+      [chatId]: conversation,
+    };
+    setAllConversations(updatedConversations);
+  }
 
   function updateChatName(chatId: string, newChatName: string) {
     const updatedChatNames = { ...chatNames, [chatId]: newChatName };
@@ -43,21 +65,21 @@ export function useChats(namespace: string, userEmail: string | undefined) {
 
   function createChat() {
     const newChatId = uuidv4();
-    const updatedChatList = [...chatList, { namespace, chatId: newChatId }];
-    setAllChats(updatedChatList);
+    const updatedAllChats = [...allChats, { namespace, chatId: newChatId }];
+    setAllChats(updatedAllChats);
 
     return newChatId;
   }
 
-  async function deleteChat(chatIdToDelete: string) {
-    const updatedChatList = chatList.filter(
+  function deleteChat(chatIdToDelete: string) {
+    const updatedAllChats = allChats.filter(
       (chat) => chat.chatId !== chatIdToDelete,
     );
-    setAllChats(updatedChatList);
+    setAllChats(updatedAllChats);
 
     if (chatIdToDelete === selectedChatId) {
       const newSelectedChatId =
-        updatedChatList.length > 0 ? updatedChatList[0].chatId : '';
+        updatedAllChats.length > 0 ? updatedAllChats[0].chatId : '';
       setSelectedChatId(newSelectedChatId);
     }
   }
@@ -65,12 +87,6 @@ export function useChats(namespace: string, userEmail: string | undefined) {
   const filteredChatList = chatList.filter(
     (chat) => chat.namespace === namespace,
   );
-
-  console.log(filteredChatList, 'filteredChatList');
-
-  useEffect(() => {
-    console.log('selectedChatId changed:', selectedChatId);
-  }, [selectedChatId]);
 
   return {
     chatList,
@@ -80,7 +96,8 @@ export function useChats(namespace: string, userEmail: string | undefined) {
     deleteChat,
     chatNames,
     updateChatName,
-    userEmail,
     filteredChatList,
+    getConversation,
+    updateConversation,
   };
 }

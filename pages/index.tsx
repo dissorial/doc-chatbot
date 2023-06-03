@@ -5,8 +5,6 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ChatMessage } from '@/types/chat';
@@ -21,30 +19,17 @@ import SidebarList from '@/components/sidebar/SidebarList';
 import EmptyState from '@/components/main/EmptyState';
 import Header from '@/components/header/Header';
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
-  const router = useRouter();
   const [query, setQuery] = useState<string>('');
-  const [chatId, setChatId] = useState<string>('1');
 
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated: () => router.push('/login'),
-  });
   const [returnSourceDocuments, setReturnSourceDocuments] =
     useState<boolean>(false);
   const [modelTemperature, setModelTemperature] = useState<number>(0.5);
-  const [userEmail, setUserEmail] = useState<string>('');
-  const [userName, setUserName] = useState<string>('');
-  const [userImage, setUserImage] = useState<string>('');
 
   const { namespaces, selectedNamespace, setSelectedNamespace } =
-    useNamespaces(userEmail);
+    useNamespaces();
 
   const {
     chatList,
@@ -55,7 +40,9 @@ export default function Home() {
     chatNames,
     updateChatName,
     filteredChatList,
-  } = useChats(selectedNamespace, userEmail);
+    getConversation,
+    updateConversation,
+  } = useChats(selectedNamespace);
 
   const nameSpaceHasChats = chatList.length > 0;
 
@@ -91,14 +78,17 @@ export default function Home() {
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const fetchChatHistory = useCallback(async () => {
+  const fetchChatHistory = useCallback(() => {
     try {
-      const response = await fetch(
-        `/api/history?chatId=${selectedChatId}&userEmail=${userEmail}`,
-      );
-      const data = await response.json();
+      const conversations = getConversation(selectedChatId);
+
+      if (!conversations || !conversations.messages) {
+        console.error('Failed to fetch chat history: No conversations found.');
+        return;
+      }
 
       const pairedMessages: [any, any][] = [];
+      const data = conversations.messages;
 
       for (let i = 0; i < data.length; i += 2) {
         pairedMessages.push([data[i], data[i + 1]]);
@@ -107,34 +97,22 @@ export default function Home() {
       setConversation((conversation) => ({
         ...conversation,
         messages: data.map((message: any) => ({
-          type: message.sender === 'user' ? 'userMessage' : 'apiMessage',
-          message: message.content,
+          type: message.type === 'userMessage' ? 'userMessage' : 'apiMessage',
+          message: message.message,
           sourceDocs: message.sourceDocs?.map((doc: any) => ({
             pageContent: doc.pageContent,
             metadata: { source: doc.metadata.source },
           })),
         })),
         history: pairedMessages.map(([userMessage, botMessage]: any) => [
-          userMessage.content,
-          botMessage?.content || '',
+          userMessage.message,
+          botMessage?.message || '',
         ]),
       }));
     } catch (error) {
       console.error('Failed to fetch chat history:', error);
     }
-  }, [selectedChatId, userEmail]);
-
-  useEffect(() => {
-    if (status === 'authenticated' && session?.user?.email) {
-      setUserEmail(session.user.email);
-      if (session?.user?.name) {
-        setUserName(session.user.name);
-      }
-      if (session?.user?.image) {
-        setUserImage(session.user.image);
-      }
-    }
-  }, [status, session]);
+  }, [selectedChatId, getConversation]);
 
   useEffect(() => {
     if (selectedNamespace && chatList.length > 0) {
@@ -151,10 +129,6 @@ export default function Home() {
   useEffect(() => {
     textAreaRef.current?.focus();
   }, []);
-
-  useEffect(() => {
-    fetchChatHistory();
-  }, [chatId, fetchChatHistory]);
 
   async function handleSubmit(e: any) {
     e.preventDefault();
@@ -173,59 +147,66 @@ export default function Home() {
         {
           type: 'userMessage',
           message: question,
-        },
+        } as ChatMessage,
       ],
     }));
 
     setLoading(true);
     setQuery('');
 
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          question,
-          history,
-          chatId,
-          selectedNamespace,
-          userEmail,
-          returnSourceDocuments,
-          modelTemperature,
-        }),
-      });
-      const data = await response.json();
+    const conversation = getConversation(selectedChatId);
 
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setConversation((conversation) => ({
-          ...conversation,
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        question,
+        history: conversation.history,
+        selectedChatId,
+        selectedNamespace,
+        returnSourceDocuments,
+        modelTemperature,
+      }),
+    });
+    const data = await response.json();
+
+    if (data.error) {
+      setError(data.error);
+    } else {
+      setConversation((prevConversation) => {
+        const updatedConversation = {
+          ...prevConversation,
           messages: [
-            ...conversation.messages,
+            ...prevConversation.messages,
             {
               type: 'apiMessage',
               message: data.text,
-              sourceDocs: data.sourceDocuments,
-            },
+              sourceDocs: data.sourceDocuments
+                ? data.sourceDocuments.map(
+                    (doc: any) =>
+                      new Document({
+                        pageContent: doc.pageContent,
+                        metadata: { source: doc.metadata.source },
+                      }),
+                  )
+                : undefined,
+            } as ChatMessage,
           ],
-          history: [...conversation.history, [question, data.text]],
-        }));
-      }
+          history: [
+            ...prevConversation.history,
+            [question, data.text] as [string, string],
+          ],
+        };
 
-      setLoading(false);
-
-      messageListRef.current?.scrollTo(0, messageListRef.current.scrollHeight);
-    } catch (error) {
-      setLoading(false);
-      console.error('Error fetching data:', error);
-      if (error) {
-        console.error('Server responded with:', error);
-      }
-      setError('An error occurred while fetching the data. Please try again.');
+        updateConversation(selectedChatId, updatedConversation);
+        return updatedConversation;
+      });
     }
+
+    setLoading(false);
+    messageListRef.current?.scrollTo(0, messageListRef.current.scrollHeight);
   }
 
   const handleEnter = (e: any) => {
@@ -325,9 +306,9 @@ export default function Home() {
                 selectedNamespace={selectedNamespace}
                 setSelectedNamespace={setSelectedNamespace}
                 namespaces={namespaces}
-                chatList={filteredChatList.map((chat) => chat.chatId)}
+                filteredChatList={filteredChatList.map((chat) => chat.chatId)}
                 selectedChatId={selectedChatId}
-                setChatId={setChatId}
+                setChatId={setSelectedChatId}
                 setSelectedChatId={setSelectedChatId}
                 chatNames={chatNames}
                 updateChatName={updateChatName}
@@ -342,11 +323,7 @@ export default function Home() {
           </div>
 
           <div className="lg:pl-72 h-screen">
-            <Header
-              setSidebarOpen={setSidebarOpen}
-              userImage={userImage}
-              userName={userName}
-            />
+            <Header setSidebarOpen={setSidebarOpen} />
 
             <main className="flex flex-col">
               {nameSpaceHasChats && selectedNamespace ? (
@@ -356,8 +333,6 @@ export default function Home() {
                       messages={messages.map(mapChatMessageToMessage)}
                       loading={loading}
                       messageListRef={messageListRef}
-                      userImage={userImage}
-                      userName={userName}
                     />
                   </div>
                 </>

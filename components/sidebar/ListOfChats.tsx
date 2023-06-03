@@ -6,7 +6,7 @@ function classNames(...classes: string[]) {
 }
 
 const ListOfChats = ({
-  chatList,
+  filteredChatList,
   selectedChatId,
   setChatId,
   setSelectedChatId,
@@ -14,7 +14,7 @@ const ListOfChats = ({
   updateChatName,
   deleteChat,
 }: {
-  chatList: string[];
+  filteredChatList: string[];
   selectedChatId: string;
   setChatId: (chatId: string) => void;
   setSelectedChatId: (chatId: string) => void;
@@ -45,7 +45,7 @@ const ListOfChats = ({
       <div className="text-xs sm:text-sm font-semibold leading-6 text-blue-400">
         Your chats
       </div>
-      {chatList.map((chatId, index) => (
+      {filteredChatList.map((chatId, index) => (
         <li
           key={chatId}
           className={classNames(

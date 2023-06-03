@@ -15,7 +15,7 @@ interface SidebarListProps {
   setReturnSourceDocuments: React.Dispatch<React.SetStateAction<boolean>>;
   modelTemperature: number;
   setModelTemperature: React.Dispatch<React.SetStateAction<number>>;
-  chatList: string[];
+  filteredChatList: string[];
   selectedChatId: string;
   setChatId: (value: string) => void;
   setSelectedChatId: React.Dispatch<React.SetStateAction<string>>;
@@ -33,7 +33,7 @@ const SidebarList: React.FC<SidebarListProps> = ({
   setReturnSourceDocuments,
   modelTemperature,
   setModelTemperature,
-  chatList,
+  filteredChatList,
   selectedChatId,
   setChatId,
   createChat,
@@ -75,10 +75,9 @@ const SidebarList: React.FC<SidebarListProps> = ({
             </div>
           )}
 
-          {/* desktop */}
           {selectedNamespace && nameSpaceHasChats ? (
             <ListOfChats
-              chatList={chatList}
+              filteredChatList={filteredChatList}
               selectedChatId={selectedChatId}
               setChatId={setChatId}
               setSelectedChatId={setSelectedChatId}
