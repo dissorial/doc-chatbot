@@ -82,8 +82,6 @@ export default function Home() {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const fetchChatHistory = useCallback(() => {
-    setLoading(true);
-
     try {
       const conversations = getConversation(selectedChatId);
 
@@ -116,8 +114,6 @@ export default function Home() {
       }));
     } catch (error) {
       console.error('Failed to fetch chat history:', error);
-    } finally {
-      setLoading(false);
     }
   }, [selectedChatId, getConversation]);
 
@@ -232,148 +228,144 @@ export default function Home() {
 
   return (
     <>
-      {loading ? (
-        <LoadingState />
-      ) : (
-        <div className="h-full">
-          <Transition.Root show={sidebarOpen} as={Fragment}>
-            <Dialog as="div" onClose={setSidebarOpen}>
+      <div className="h-full">
+        <Transition.Root show={sidebarOpen} as={Fragment}>
+          <Dialog as="div" onClose={setSidebarOpen}>
+            <Transition.Child
+              as={Fragment}
+              enter="transition-opacity ease-linear duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="transition-opacity ease-linear duration-300"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-gray-900/80" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 flex">
               <Transition.Child
                 as={Fragment}
-                enter="transition-opacity ease-linear duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="transition-opacity ease-linear duration-300"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
+                enter="transition ease-in-out duration-300 transform"
+                enterFrom="-translate-x-full"
+                enterTo="translate-x-0"
+                leave="transition ease-in-out duration-300 transform"
+                leaveFrom="translate-x-0"
+                leaveTo="-translate-x-full"
               >
-                <div className="fixed inset-0 bg-gray-900/80" />
-              </Transition.Child>
-
-              <div className="fixed inset-0 flex">
-                <Transition.Child
-                  as={Fragment}
-                  enter="transition ease-in-out duration-300 transform"
-                  enterFrom="-translate-x-full"
-                  enterTo="translate-x-0"
-                  leave="transition ease-in-out duration-300 transform"
-                  leaveFrom="translate-x-0"
-                  leaveTo="-translate-x-full"
-                >
-                  <Dialog.Panel className="relative mr-16 flex w-full max-w-xs flex-1">
-                    <Transition.Child
-                      as={Fragment}
-                      enter="ease-in-out duration-300"
-                      enterFrom="opacity-0"
-                      enterTo="opacity-100"
-                      leave="ease-in-out duration-300"
-                      leaveFrom="opacity-100"
-                      leaveTo="opacity-0"
-                    >
-                      <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
-                        <button
-                          type="button"
-                          className="-m-2.5 p-2.5"
-                          onClick={() => setSidebarOpen(false)}
-                        >
-                          <span className="sr-only">Close sidebar</span>
-                          <XMarkIcon
-                            className="h-6 w-6 text-white"
-                            aria-hidden="true"
-                          />
-                        </button>
-                      </div>
-                    </Transition.Child>
-                    <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
-                      <div className="flex h-16 shrink-0 items-center"></div>
-                      <SidebarList
-                        createChat={createChat}
-                        selectedNamespace={selectedNamespace}
-                        setSelectedNamespace={setSelectedNamespace}
-                        namespaces={namespaces}
-                        filteredChatList={filteredChatList.map(
-                          (chat) => chat.chatId,
-                        )}
-                        selectedChatId={selectedChatId}
-                        setSelectedChatId={setSelectedChatId}
-                        chatNames={chatNames}
-                        updateChatName={updateChatName}
-                        deleteChat={deleteChat}
-                        returnSourceDocuments={returnSourceDocuments}
-                        setReturnSourceDocuments={setReturnSourceDocuments}
-                        modelTemperature={modelTemperature}
-                        setModelTemperature={setModelTemperature}
-                        nameSpaceHasChats={nameSpaceHasChats}
-                      />
+                <Dialog.Panel className="relative mr-16 flex w-full max-w-xs flex-1">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-in-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in-out duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
+                      <button
+                        type="button"
+                        className="-m-2.5 p-2.5"
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        <span className="sr-only">Close sidebar</span>
+                        <XMarkIcon
+                          className="h-6 w-6 text-white"
+                          aria-hidden="true"
+                        />
+                      </button>
                     </div>
-                  </Dialog.Panel>
-                </Transition.Child>
-              </div>
-            </Dialog>
-          </Transition.Root>
-
-          <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col h-screen overflow-y-hidden">
-            <div className="flex grow flex-col bg-gray-900 pb-4 border-r border-gray-800 h-full">
-              <div className="flex h-8 shrink-0 items-center"></div>
-              <SidebarList
-                createChat={createChat}
-                selectedNamespace={selectedNamespace}
-                setSelectedNamespace={setSelectedNamespace}
-                namespaces={namespaces}
-                filteredChatList={filteredChatList.map((chat) => chat.chatId)}
-                selectedChatId={selectedChatId}
-                setSelectedChatId={setSelectedChatId}
-                chatNames={chatNames}
-                updateChatName={updateChatName}
-                deleteChat={deleteChat}
-                returnSourceDocuments={returnSourceDocuments}
-                setReturnSourceDocuments={setReturnSourceDocuments}
-                modelTemperature={modelTemperature}
-                setModelTemperature={setModelTemperature}
-                nameSpaceHasChats={nameSpaceHasChats}
-              />
-            </div>
-          </div>
-
-          <div className="lg:pl-72 h-screen">
-            <Header setSidebarOpen={setSidebarOpen} />
-
-            <main className="flex flex-col">
-              {nameSpaceHasChats && selectedNamespace ? (
-                <>
-                  <div className="overflow-y-auto flex-grow pb-36">
-                    <MessageList
-                      messages={messages.map(mapConversationMessageToMessage)}
-                      loading={loading}
-                      messageListRef={messageListRef}
+                  </Transition.Child>
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
+                    <div className="flex h-16 shrink-0 items-center"></div>
+                    <SidebarList
+                      createChat={createChat}
+                      selectedNamespace={selectedNamespace}
+                      setSelectedNamespace={setSelectedNamespace}
+                      namespaces={namespaces}
+                      filteredChatList={filteredChatList.map(
+                        (chat) => chat.chatId,
+                      )}
+                      selectedChatId={selectedChatId}
+                      setSelectedChatId={setSelectedChatId}
+                      chatNames={chatNames}
+                      updateChatName={updateChatName}
+                      deleteChat={deleteChat}
+                      returnSourceDocuments={returnSourceDocuments}
+                      setReturnSourceDocuments={setReturnSourceDocuments}
+                      modelTemperature={modelTemperature}
+                      setModelTemperature={setModelTemperature}
+                      nameSpaceHasChats={nameSpaceHasChats}
                     />
                   </div>
-                </>
-              ) : (
-                <>
-                  <EmptyState
-                    nameSpaceHasChats={nameSpaceHasChats}
-                    selectedNamespace={selectedNamespace}
-                  />
-                </>
-              )}
-              {nameSpaceHasChats && selectedNamespace && (
-                <div className="fixed w-full bottom-0 flex bg-gradient-to-t from-gray-800 to-gray-800/0 justify-center lg:pr-72">
-                  <ChatForm
-                    loading={loading}
-                    error={error}
-                    query={query}
-                    textAreaRef={textAreaRef}
-                    handleEnter={handleEnter}
-                    handleSubmit={handleSubmit}
-                    setQuery={setQuery}
-                  />
-                </div>
-              )}
-            </main>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </Dialog>
+        </Transition.Root>
+
+        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col h-screen overflow-y-hidden">
+          <div className="flex grow flex-col bg-gray-900 pb-4 border-r border-gray-800 h-full">
+            <div className="flex h-8 shrink-0 items-center"></div>
+            <SidebarList
+              createChat={createChat}
+              selectedNamespace={selectedNamespace}
+              setSelectedNamespace={setSelectedNamespace}
+              namespaces={namespaces}
+              filteredChatList={filteredChatList.map((chat) => chat.chatId)}
+              selectedChatId={selectedChatId}
+              setSelectedChatId={setSelectedChatId}
+              chatNames={chatNames}
+              updateChatName={updateChatName}
+              deleteChat={deleteChat}
+              returnSourceDocuments={returnSourceDocuments}
+              setReturnSourceDocuments={setReturnSourceDocuments}
+              modelTemperature={modelTemperature}
+              setModelTemperature={setModelTemperature}
+              nameSpaceHasChats={nameSpaceHasChats}
+            />
           </div>
         </div>
-      )}
+
+        <div className="lg:pl-72 h-screen">
+          <Header setSidebarOpen={setSidebarOpen} />
+
+          <main className="flex flex-col">
+            {nameSpaceHasChats && selectedNamespace ? (
+              <>
+                <div className="overflow-y-auto flex-grow pb-36">
+                  <MessageList
+                    messages={messages.map(mapConversationMessageToMessage)}
+                    loading={loading}
+                    messageListRef={messageListRef}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <EmptyState
+                  nameSpaceHasChats={nameSpaceHasChats}
+                  selectedNamespace={selectedNamespace}
+                />
+              </>
+            )}
+            {nameSpaceHasChats && selectedNamespace && (
+              <div className="fixed w-full bottom-0 flex bg-gradient-to-t from-gray-800 to-gray-800/0 justify-center lg:pr-72">
+                <ChatForm
+                  loading={loading}
+                  error={error}
+                  query={query}
+                  textAreaRef={textAreaRef}
+                  handleEnter={handleEnter}
+                  handleSubmit={handleSubmit}
+                  setQuery={setQuery}
+                />
+              </div>
+            )}
+          </main>
+        </div>
+      </div>
     </>
   );
 }

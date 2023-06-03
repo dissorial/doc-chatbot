@@ -29,7 +29,7 @@ Here is the user's question:
 
 Question: {question}
 
-Provide your response in markdown format. Make sure you provide extremely long answers each time.`;
+Provide your response in markdown format.`;
 
 // Creates a ConversationalRetrievalQAChain object that uses an OpenAI model and a PineconeStore vectorstore
 export const makeChain = (
