@@ -16,6 +16,8 @@
 
 `+ LangChain and Pinecone`
 
+Note: If you'd like to set this up with google auth and mongoDB (as opposed to no auth and using local storage), have a look at this branch: [mongodb-and-auth](https://github.com/dissorial/doc-chatbot/tree/mongodb-and-auth)
+
 **Main chat area**
 ![Main chat area](public/images/main.png)
 
