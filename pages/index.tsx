@@ -19,6 +19,7 @@ import SidebarList from '@/components/sidebar/SidebarList';
 import EmptyState from '@/components/main/EmptyState';
 import Header from '@/components/header/Header';
 
+const status = '';
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
@@ -288,13 +289,16 @@ export default function Home() {
                     </Transition.Child>
                     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
                       <div className="flex h-16 shrink-0 items-center"></div>
-                      {/* <SidebarList
+                      <SidebarList
+                        createChat={createChat}
                         selectedNamespace={selectedNamespace}
                         setSelectedNamespace={setSelectedNamespace}
                         namespaces={namespaces}
-                        chatList={filteredChatList.map((chat) => chat.chatId)}
+                        filteredChatList={filteredChatList.map(
+                          (chat) => chat.chatId,
+                        )}
                         selectedChatId={selectedChatId}
-                        setChatId={setChatId}
+                        setChatId={setSelectedChatId}
                         setSelectedChatId={setSelectedChatId}
                         chatNames={chatNames}
                         updateChatName={updateChatName}
@@ -303,9 +307,8 @@ export default function Home() {
                         setReturnSourceDocuments={setReturnSourceDocuments}
                         modelTemperature={modelTemperature}
                         setModelTemperature={setModelTemperature}
-                        createChat={createChat}
                         nameSpaceHasChats={nameSpaceHasChats}
-                      /> */}
+                      />
                     </div>
                   </Dialog.Panel>
                 </Transition.Child>
@@ -313,9 +316,9 @@ export default function Home() {
             </Dialog>
           </Transition.Root>
 
-          <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-            <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 border-r border-gray-800">
-              <div className="flex h-16 shrink-0 items-center"></div>
+          <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col h-screen overflow-y-hidden">
+            <div className="flex grow flex-col bg-gray-900 pb-4 border-r border-gray-800 h-full">
+              <div className="flex h-8 shrink-0 items-center"></div>
               <SidebarList
                 createChat={createChat}
                 selectedNamespace={selectedNamespace}

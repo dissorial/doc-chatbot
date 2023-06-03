@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 import { useDropzone } from 'react-dropzone';
 import ChunkSizeModal from '@/components/other/ChunkSizeModal';
 import OverlapSizeModal from '@/components/other/OverlapSizeModal';
-import { QuestionMarkCircleIcon } from '@heroicons/react/20/solid';
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  QuestionMarkCircleIcon,
+  TrashIcon,
+  XMarkIcon,
+} from '@heroicons/react/20/solid';
+import Pattern from './components/Pattern';
 
 export default function Settings() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -23,17 +29,9 @@ export default function Settings() {
     useState<boolean>(false);
   const router = useRouter();
 
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated: () => router.push('/login'),
-  });
-  const userEmail = session?.user?.email;
-
   const fetchNamespaces = useCallback(async () => {
-    if (!userEmail) return;
-
     try {
-      const response = await fetch(`/api/getNamespaces?userEmail=${userEmail}`);
+      const response = await fetch(`/api/getNamespaces`);
       const data = await response.json();
 
       if (response.ok) {
@@ -44,11 +42,11 @@ export default function Settings() {
     } catch (error: any) {
       setError(error.message);
     }
-  }, [userEmail]);
+  }, []);
 
   useEffect(() => {
     fetchNamespaces();
-  }, [userEmail, fetchNamespaces]);
+  }, [fetchNamespaces]);
 
   const handleDelete = async (namespace: string) => {
     try {
@@ -113,7 +111,7 @@ export default function Settings() {
       setLoading(true);
 
       const response = await fetch(
-        `/api/consume?namespaceName=${namespaceName}&userEmail=${userEmail}&chunkSize=${chunkSize}&overlapSize=${overlapSize}`,
+        `/api/consume?namespaceName=${namespaceName}&chunkSize=${chunkSize}&overlapSize=${overlapSize}`,
         {
           method: 'POST',
         },
@@ -142,70 +140,25 @@ export default function Settings() {
       <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
         <div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-48">
           <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
-            <div className="absolute inset-y-0 left-0 -z-10 w-full h-full overflow-hidden ring-1 ring-white/5 lg:w-1/2">
-              <svg
-                className="absolute inset-0 h-full w-full stroke-gray-700 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]"
-                aria-hidden="true"
-              >
-                <defs>
-                  <pattern
-                    id="54f88622-e7f8-4f1d-aaf9-c2f5e46dd1f2"
-                    width={200}
-                    height={200}
-                    x="100%"
-                    y={-1}
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <path d="M130 200V.5M.5 .5H200" fill="none" />
-                  </pattern>
-                </defs>
-                <svg
-                  x="100%"
-                  y={-1}
-                  className="overflow-visible fill-gray-800/20"
-                >
-                  <path d="M-470.5 0h201v201h-201Z" strokeWidth={0} />
-                </svg>
-                <rect
-                  width="100%"
-                  height="100%"
-                  strokeWidth={0}
-                  fill="url(#54f88622-e7f8-4f1d-aaf9-c2f5e46dd1f2)"
-                />
-              </svg>
-              <div
-                className="absolute -left-56 top-[calc(100%-13rem)] transform-gpu blur-3xl lg:left-[max(-14rem,calc(100%-59rem))] lg:top-[calc(50%-7rem)]"
-                aria-hidden="true"
-              >
-                <div
-                  className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-br from-[#80caff] to-[#4f46e5] opacity-20"
-                  style={{
-                    clipPath:
-                      'polygon(74.1% 56.1%, 100% 38.6%, 97.5% 73.3%, 85.5% 100%, 80.7% 98.2%, 72.5% 67.7%, 60.2% 37.8%, 52.4% 32.2%, 47.5% 41.9%, 45.2% 65.8%, 27.5% 23.5%, 0.1% 35.4%, 17.9% 0.1%, 27.6% 23.5%, 76.1% 2.6%, 74.1% 56.1%)',
-                  }}
-                />
-              </div>
-            </div>
-
+            <Pattern />
             <div className="max-w-xl mx-auto">
-              <h2 className="mb-4 text-xl text-center sm:text-3xl sm:text-left font-bold text-white">
-                Your Pinecone namespaces
-              </h2>
               {namespaces.length > 0 ? (
-                <>
-                  <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
-                    <span className="rounded-md bg-blue-400/10 px-3 py-2.5 text-xs font-medium text-blue-400 ring-1 ring-inset ring-blue-400/30 mb-4 sm:mb-0">
-                      Signed in as {userEmail}
-                    </span>
-                    <button
-                      type="button"
-                      className="rounded-md bg-white px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-200"
-                      onClick={() => router.push('/')}
-                    >
-                      Chat
-                    </button>
-                  </div>
-                </>
+                <div className="flex align-center items-center justify-between mb-4">
+                  <h2 className="mb-4 text-xl text-center sm:text-3xl sm:text-left font-bold text-white">
+                    Your namespaces
+                  </h2>
+                  <button
+                    type="button"
+                    className="rounded-md items-center align-center justify-between flex bg-white px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-200"
+                    onClick={() => router.push('/')}
+                  >
+                    Start chatting
+                    <ArrowRightIcon
+                      className="ml-2 -mr-0.5 h-4 w-4"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
               ) : (
                 <span className="inline-flex items-center rounded-md bg-red-400/10 px-2 py-1 text-xs sm:text-sm font-medium text-red-400 ring-1 ring-inset ring-red-400/20">
                   You currently do not have any namespaces
@@ -223,34 +176,34 @@ export default function Settings() {
                         {namespace}
                       </p>
                     </div>
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 flex items-center space-x-2">
                       {selectedNamespace === namespace ? (
-                        <>
-                          <button
-                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700                   focus:ring-indigo-500"
+                        <div className="flex items-center space-x-2">
+                          <CheckIcon
+                            className="h-5 w-5 text-green-400 hover:text-green-500 cursor-pointer"
+                            aria-hidden="true"
                             onClick={() => handleDelete(selectedNamespace)}
-                          >
-                            Confirm Delete
-                          </button>
-                          <button
-                            className="ml-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-gray-300 hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          />
+                          <XMarkIcon
+                            className="h-5 w-5 text-gray-400 hover:text-gray-300 cursor-pointer"
+                            aria-hidden="true"
                             onClick={() => setSelectedNamespace('')}
-                          >
-                            Cancel
-                          </button>
-                        </>
+                          />
+                        </div>
                       ) : (
-                        <button
-                          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        <TrashIcon
+                          className="h-5 w-5 text-red-400
+                        hover:text-red-500 cursor-pointer
+                        "
+                          aria-hidden="true"
                           onClick={() => setSelectedNamespace(namespace)}
-                        >
-                          Delete
-                        </button>
+                        />
                       )}
                     </div>
                   </li>
                 ))}
               </ul>
+
               {deleteMessage && (
                 <p className="mt-6 text-md font-medium text-green-400 text-center">
                   {deleteMessage}

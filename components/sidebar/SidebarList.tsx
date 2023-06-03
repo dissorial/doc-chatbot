@@ -1,6 +1,4 @@
 import React from 'react';
-import { useRouter } from 'next/router';
-import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import Button from '../buttons/Button';
 import ListOfChats from './ListOfChats';
@@ -45,67 +43,67 @@ const SidebarList: React.FC<SidebarListProps> = ({
   namespaces,
   setSelectedNamespace,
 }) => {
-  const router = useRouter();
   return (
-    <nav className="flex flex-1 flex-col">
-      <ul role="list" className="flex flex-1 flex-col gap-y-7">
-        <li>
-          {selectedNamespace && (
-            <div className="space-y-4 mb-6">
-              <SourceDocumentsToggle
-                checked={returnSourceDocuments}
-                setReturnSourceDocuments={setReturnSourceDocuments}
-              />
-
-              <ModelTemperature
-                modelTemperature={modelTemperature}
-                setModelTemperature={setModelTemperature}
-              />
-
-              <Button
-                buttonType="primary"
-                buttonText="New chat"
-                onClick={async () => {
-                  const newChatId = createChat();
-                  setChatId(newChatId);
-                  setSelectedChatId(newChatId);
-                }}
-                icon={PlusCircleIcon}
-              />
-            </div>
-          )}
-
-          {selectedNamespace && nameSpaceHasChats ? (
-            <ListOfChats
-              filteredChatList={filteredChatList}
-              selectedChatId={selectedChatId}
-              setChatId={setChatId}
-              setSelectedChatId={setSelectedChatId}
-              chatNames={chatNames}
-              updateChatName={updateChatName}
-              deleteChat={deleteChat}
+    <nav className="flex flex-col h-full">
+      <div>
+        {selectedNamespace && (
+          <div className="px-4 space-y-3 mb-4">
+            <SourceDocumentsToggle
+              checked={returnSourceDocuments}
+              setReturnSourceDocuments={setReturnSourceDocuments}
             />
-          ) : (
-            <div className="text-xs font-semibold leading-6 text-red-400">
-              {selectedNamespace
-                ? 'No chats in this namespace'
-                : 'Select a namespace to display chats'}
-            </div>
-          )}
-        </li>
+
+            <ModelTemperature
+              modelTemperature={modelTemperature}
+              setModelTemperature={setModelTemperature}
+            />
+
+            <Button
+              buttonType="primary"
+              buttonText="New chat"
+              onClick={async () => {
+                const newChatId = createChat();
+                setChatId(newChatId);
+                setSelectedChatId(newChatId);
+              }}
+              icon={PlusCircleIcon}
+            />
+          </div>
+        )}
+      </div>
+      <div className="px-4 w-full space-y-2 mb-6">
+        <div className="text-xs sm:text-sm font-semibold leading-6 text-blue-400">
+          Your namespaces
+        </div>
         <ListOfNamespaces
           namespaces={namespaces}
           selectedNamespace={selectedNamespace}
           setSelectedNamespace={setSelectedNamespace}
         />
-      </ul>
+      </div>
 
-      <Button
-        buttonType="secondary"
-        buttonText="Settings"
-        onClick={() => router.push('/settings')}
-        icon={Cog6ToothIcon}
-      />
+      <div className="px-4  text-xs sm:text-sm font-semibold leading-6 text-blue-400">
+        Your chats
+      </div>
+      <div className="px-4 flex-grow overflow-y-auto">
+        {selectedNamespace && nameSpaceHasChats ? (
+          <ListOfChats
+            filteredChatList={filteredChatList}
+            selectedChatId={selectedChatId}
+            setChatId={setChatId}
+            setSelectedChatId={setSelectedChatId}
+            chatNames={chatNames}
+            updateChatName={updateChatName}
+            deleteChat={deleteChat}
+          />
+        ) : (
+          <div className="text-xs font-semibold leading-6 text-red-400">
+            {selectedNamespace
+              ? 'No chats in this namespace'
+              : 'Select a namespace to display chats'}
+          </div>
+        )}
+      </div>
     </nav>
   );
 };

@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react';
-import { Cog6ToothIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
 
 interface ButtonProps {
   buttonType?: 'primary' | 'secondary';
@@ -15,7 +14,7 @@ const Button = ({
   icon: Icon,
 }: ButtonProps): ReactElement => {
   let buttonClassName =
-    'inline-flex items-center gap-x-2 rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-sm w-full mb-8';
+    'inline-flex items-center gap-x-2 rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-sm w-full';
 
   if (buttonType === 'primary') {
     buttonClassName +=

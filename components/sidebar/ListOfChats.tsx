@@ -41,11 +41,8 @@ const ListOfChats = ({
   };
 
   return (
-    <ul role="list" className="-mx-2 space-y-1 mt-2 px-2">
-      <div className="text-xs sm:text-sm font-semibold leading-6 text-blue-400">
-        Your chats
-      </div>
-      {filteredChatList.map((chatId, index) => (
+    <ul role="list" className="-mx-2 mt-2 px-2 pb-6">
+      {[...filteredChatList].reverse().map((chatId, index) => (
         <li
           key={chatId}
           className={classNames(
@@ -56,7 +53,7 @@ const ListOfChats = ({
           )}
           onClick={() => handleChatClick(chatId)}
         >
-          {chatNames[chatId] || `Chat ${index}`}
+          {chatNames[chatId] || `Chat ${filteredChatList.length - 1 - index}`}
           {chatId === selectedChatId && (
             <div className="ml-auto">
               <button
