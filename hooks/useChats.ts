@@ -58,6 +58,18 @@ export function useChats(namespace: string) {
     const updatedAllChats = [...allChats, { namespace, chatId: newChatId }];
     setAllChats(updatedAllChats);
 
+    const initialConversation = {
+      messages: [
+        {
+          message: 'Hi, what would you like to know about these documents?',
+          type: 'apiMessage' as const,
+        },
+      ],
+      history: [],
+    };
+
+    updateConversation(newChatId, initialConversation);
+
     return newChatId;
   }
 

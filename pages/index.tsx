@@ -12,25 +12,26 @@ import { Document } from 'langchain/document';
 import { Message } from '@/types';
 import useNamespaces from '@/hooks/useNamespaces';
 import { useChats } from '@/hooks/useChats';
-import LoadingState from '@/components/other/LoadingState';
 import MessageList from '@/components/main/MessageList';
 import ChatForm from '@/components/main/ChatForm';
 import SidebarList from '@/components/sidebar/SidebarList';
 import EmptyState from '@/components/main/EmptyState';
 import Header from '@/components/header/Header';
 
-const status = '';
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-
   const [query, setQuery] = useState<string>('');
+  const [modelTemperature, setModelTemperature] = useState<number>(0.5);
 
   const [returnSourceDocuments, setReturnSourceDocuments] =
     useState<boolean>(false);
-  const [modelTemperature, setModelTemperature] = useState<number>(0.5);
 
-  const { namespaces, selectedNamespace, setSelectedNamespace } =
-    useNamespaces();
+  const {
+    namespaces,
+    selectedNamespace,
+    setSelectedNamespace,
+    isLoadingNamespaces,
+  } = useNamespaces();
 
   const {
     chatList,
@@ -46,6 +47,7 @@ export default function Home() {
   } = useChats(selectedNamespace);
 
   const nameSpaceHasChats = chatList.length > 0;
+  const userHasNamespaces = namespaces.length > 0;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -179,6 +181,7 @@ export default function Home() {
         modelTemperature,
       }),
     });
+
     const data = await response.json();
 
     if (data.error) {
@@ -297,6 +300,7 @@ export default function Home() {
                       modelTemperature={modelTemperature}
                       setModelTemperature={setModelTemperature}
                       nameSpaceHasChats={nameSpaceHasChats}
+                      isLoadingNamespaces={isLoadingNamespaces}
                     />
                   </div>
                 </Dialog.Panel>
@@ -324,6 +328,7 @@ export default function Home() {
               modelTemperature={modelTemperature}
               setModelTemperature={setModelTemperature}
               nameSpaceHasChats={nameSpaceHasChats}
+              isLoadingNamespaces={isLoadingNamespaces}
             />
           </div>
         </div>
@@ -333,23 +338,23 @@ export default function Home() {
 
           <main className="flex flex-col">
             {nameSpaceHasChats && selectedNamespace ? (
-              <>
-                <div className="overflow-y-auto flex-grow pb-36">
+              <div className="flex-grow pb-36">
+                <div className="h-full">
                   <MessageList
                     messages={messages.map(mapConversationMessageToMessage)}
                     loading={loading}
                     messageListRef={messageListRef}
                   />
                 </div>
-              </>
+              </div>
             ) : (
-              <>
-                <EmptyState
-                  nameSpaceHasChats={nameSpaceHasChats}
-                  selectedNamespace={selectedNamespace}
-                />
-              </>
+              <EmptyState
+                nameSpaceHasChats={nameSpaceHasChats}
+                selectedNamespace={selectedNamespace}
+                userHasNamespaces={userHasNamespaces}
+              />
             )}
+
             {nameSpaceHasChats && selectedNamespace && (
               <div className="fixed w-full bottom-0 flex bg-gradient-to-t from-gray-800 to-gray-800/0 justify-center lg:pr-72">
                 <ChatForm

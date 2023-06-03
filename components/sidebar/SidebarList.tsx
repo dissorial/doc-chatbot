@@ -22,6 +22,7 @@ interface SidebarListProps {
   deleteChat: (chatId: string) => void;
   namespaces: string[];
   setSelectedNamespace: React.Dispatch<React.SetStateAction<string>>;
+  isLoadingNamespaces: boolean;
 }
 
 const SidebarList: React.FC<SidebarListProps> = ({
@@ -40,6 +41,7 @@ const SidebarList: React.FC<SidebarListProps> = ({
   deleteChat,
   namespaces,
   setSelectedNamespace,
+  isLoadingNamespaces,
 }) => {
   return (
     <nav className="flex flex-col h-full">
@@ -68,38 +70,42 @@ const SidebarList: React.FC<SidebarListProps> = ({
           </div>
         )}
       </div>
-      <div className="px-4 w-full space-y-2 mb-6">
-        <div className="text-xs sm:text-sm font-semibold leading-6 text-blue-400">
-          Your namespaces
-        </div>
-        <ListOfNamespaces
-          namespaces={namespaces}
-          selectedNamespace={selectedNamespace}
-          setSelectedNamespace={setSelectedNamespace}
-        />
-      </div>
 
-      <div className="px-4 text-xs sm:text-sm font-semibold leading-6 text-blue-400">
-        Your chats
-      </div>
-      <div className="px-4 flex-grow overflow-y-auto">
-        {selectedNamespace && nameSpaceHasChats ? (
-          <ListOfChats
-            filteredChatList={filteredChatList}
-            selectedChatId={selectedChatId}
-            setSelectedChatId={setSelectedChatId}
-            chatNames={chatNames}
-            updateChatName={updateChatName}
-            deleteChat={deleteChat}
-          />
-        ) : (
-          <div className="text-xs font-semibold leading-6 text-red-400">
-            {selectedNamespace
-              ? 'No chats in this namespace'
-              : 'Select a namespace to display chats'}
+      <>
+        <div className="px-4 w-full space-y-2 mb-6">
+          <div className="text-xs sm:text-sm font-semibold leading-6 text-blue-400">
+            Your namespaces
           </div>
-        )}
-      </div>
+          <ListOfNamespaces
+            isLoadingNamespaces={isLoadingNamespaces}
+            namespaces={namespaces}
+            selectedNamespace={selectedNamespace}
+            setSelectedNamespace={setSelectedNamespace}
+          />
+        </div>
+
+        <div className="px-4 text-xs sm:text-sm font-semibold leading-6 text-blue-400">
+          Your chats
+        </div>
+        <div className="px-4 flex-grow overflow-y-auto">
+          {selectedNamespace && nameSpaceHasChats ? (
+            <ListOfChats
+              filteredChatList={filteredChatList}
+              selectedChatId={selectedChatId}
+              setSelectedChatId={setSelectedChatId}
+              chatNames={chatNames}
+              updateChatName={updateChatName}
+              deleteChat={deleteChat}
+            />
+          ) : (
+            <div className="text-xs font-semibold leading-6 text-red-400">
+              {selectedNamespace
+                ? 'No chats in this namespace'
+                : 'Select a namespace to display chats'}
+            </div>
+          )}
+        </div>
+      </>
     </nav>
   );
 };

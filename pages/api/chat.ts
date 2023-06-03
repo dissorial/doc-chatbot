@@ -18,6 +18,12 @@ export default async function handler(
   } = req.body;
   const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
 
+  const openai_api_key = process.env.OPENAI_API_KEY ?? '';
+
+  if (!openai_api_key) {
+    return res.status(500).json({ error: 'OpenAI API key not set' });
+  }
+
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
@@ -32,7 +38,9 @@ export default async function handler(
     const index = pinecone.Index(PINECONE_INDEX_NAME);
 
     const vectorStore = await PineconeStore.fromExistingIndex(
-      new OpenAIEmbeddings({}),
+      new OpenAIEmbeddings({
+        openAIApiKey: openai_api_key,
+      }),
       {
         pineconeIndex: index,
         textKey: 'text',

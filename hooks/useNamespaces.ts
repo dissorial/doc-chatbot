@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 export default function useNamespaces() {
   const [namespaces, setNamespaces] = useState<string[]>([]);
   const [selectedNamespace, setSelectedNamespace] = useState<string>('');
+  const [isLoadingNamespaces, setIsLoadingNamespaces] = useState(true);
 
   const router = useRouter();
 
@@ -15,6 +16,10 @@ export default function useNamespaces() {
 
         if (response.ok) {
           setNamespaces(data);
+          setIsLoadingNamespaces(false);
+          if (data.length > 0) {
+            setSelectedNamespace(data[0]); // Set the first namespace from the list as the selected one
+          }
         } else {
           console.error(data.error);
         }
@@ -33,5 +38,10 @@ export default function useNamespaces() {
     }
   }, [router.query.namespace]);
 
-  return { namespaces, selectedNamespace, setSelectedNamespace };
+  return {
+    namespaces,
+    selectedNamespace,
+    setSelectedNamespace,
+    isLoadingNamespaces,
+  };
 }

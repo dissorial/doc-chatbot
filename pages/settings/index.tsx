@@ -142,28 +142,28 @@ export default function Settings() {
           <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
             <Pattern />
             <div className="max-w-xl mx-auto">
-              {namespaces.length > 0 ? (
-                <div className="flex align-center items-center justify-between mb-4">
+              <div className="flex justify-between items-center align-center mb-2">
+                {namespaces.length > 0 ? (
                   <h2 className="mb-4 text-xl text-center sm:text-3xl sm:text-left font-bold text-white">
                     Your namespaces
                   </h2>
-                  <button
-                    type="button"
-                    className="rounded-md items-center align-center justify-between flex bg-white px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-200"
-                    onClick={() => router.push('/')}
-                  >
-                    Start chatting
-                    <ArrowRightIcon
-                      className="ml-2 -mr-0.5 h-4 w-4"
-                      aria-hidden="true"
-                    />
-                  </button>
-                </div>
-              ) : (
-                <span className="inline-flex items-center rounded-md bg-red-400/10 px-2 py-1 text-xs sm:text-sm font-medium text-red-400 ring-1 ring-inset ring-red-400/20">
-                  You currently do not have any namespaces
-                </span>
-              )}
+                ) : (
+                  <span className="inline-flex items-center rounded-md bg-red-400/10 px-2 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-red-400 ring-1 ring-inset ring-red-400/20">
+                    You currently do not have any namespaces
+                  </span>
+                )}
+                <button
+                  type="button"
+                  className="rounded-md items-center align-center justify-between flex bg-white px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-200"
+                  onClick={() => router.push('/')}
+                >
+                  Start chatting
+                  <ArrowRightIcon
+                    className="ml-2 -mr-0.5 h-4 w-4"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
 
               <ul role="list" className="grid grid-cols-2 gap-4">
                 {namespaces.map((namespace) => (

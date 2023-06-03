@@ -3,6 +3,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import React from 'react';
 import Link from 'next/link';
+import LoadingDots from '../other/LoadingDots';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -12,10 +13,12 @@ const ListOfNamespaces = ({
   namespaces,
   selectedNamespace,
   setSelectedNamespace,
+  isLoadingNamespaces,
 }: {
   namespaces: string[];
   selectedNamespace: string;
   setSelectedNamespace: (namespace: string) => void;
+  isLoadingNamespaces: boolean;
 }) => {
   const handleNamespaceClick = (namespace: string) => {
     setSelectedNamespace(namespace);
@@ -24,12 +27,23 @@ const ListOfNamespaces = ({
   return (
     <Menu as="div" className="w-full relative inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-800 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-700 hover:bg-gray-700">
-          {selectedNamespace}
-          <ChevronDownIcon
-            className="-mr-1 h-5 w-5 text-gray-400"
-            aria-hidden="true"
-          />
+        <Menu.Button className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md bg-gray-800 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-700 hover:bg-gray-700">
+          {isLoadingNamespaces ? (
+            <span className="relative">
+              <LoadingDots
+                color="#04d9ff"
+                className="absolute top-1/2 transform -translate-y-1/2"
+              />
+            </span>
+          ) : (
+            <>
+              {selectedNamespace}
+              <ChevronDownIcon
+                className="-mr-1 h-5 w-5 text-gray-400"
+                aria-hidden="true"
+              />
+            </>
+          )}
         </Menu.Button>
       </div>
 
