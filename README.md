@@ -51,7 +51,7 @@ That's why I published this as a standalone repo. Nevertheless, some parts of th
 ### Clone the repo
 
 ```
-git clone https://github.com/dissorial/pdf-chatbot.git --branch mongodb-and-auth
+git clone https://github.com/dissorial/doc-chatbot.git --branch mongodb-and-auth
 ```
 
 ---
