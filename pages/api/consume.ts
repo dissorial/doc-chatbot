@@ -7,7 +7,7 @@ import { DocxLoader } from 'langchain/document_loaders/fs/docx';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
-import { pinecone } from '@/utils/pinecone-client';
+import { initPinecone } from '@/utils/pinecone-client';
 
 const filePath = process.env.NODE_ENV === 'production' ? '/tmp' : 'tmp';
 
@@ -15,9 +15,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { namespaceName, chunkSize, overlapSize } = req.query;
+  const pineconeApiKey = req.headers['x-api-key'];
+  const targetIndex = req.headers['x-index-name'] as string;
+  const pineconeEnvironment = req.headers['x-environment'];
 
-  const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
+  const pinecone = await initPinecone(
+    pineconeApiKey as string,
+    pineconeEnvironment as string,
+  );
+
+  const { namespaceName, chunkSize, overlapSize } = req.query;
 
   try {
     // Load PDF files from the specified directory
@@ -41,7 +48,7 @@ export default async function handler(
     const embeddings = new OpenAIEmbeddings();
 
     // Get the Pinecone index with the given name
-    const index = pinecone.Index(PINECONE_INDEX_NAME);
+    const index = pinecone.Index(targetIndex);
 
     // Store the document chunks in Pinecone with their embeddings
     await PineconeStore.fromDocuments(docs, embeddings, {

@@ -17,6 +17,7 @@ import ChatForm from '@/components/main/ChatForm';
 import SidebarList from '@/components/sidebar/SidebarList';
 import EmptyState from '@/components/main/EmptyState';
 import Header from '@/components/header/Header';
+import useApiKeys from '@/hooks/useKeys';
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -27,11 +28,20 @@ export default function Home() {
     useState<boolean>(false);
 
   const {
+    openAIapiKey,
+    pineconeApiKey,
+    pineconeEnvironment,
+    pineconeIndexName,
+  } = useApiKeys();
+
+  const {
     namespaces,
     selectedNamespace,
     setSelectedNamespace,
     isLoadingNamespaces,
-  } = useNamespaces();
+  } = useNamespaces(pineconeApiKey, pineconeIndexName, pineconeEnvironment);
+
+  console.log(selectedNamespace, 'selectedNamespace');
 
   const {
     chatList,
@@ -46,7 +56,6 @@ export default function Home() {
     updateConversation,
   } = useChats(selectedNamespace);
 
-  const nameSpaceHasChats = chatList.length > 0;
   const userHasNamespaces = namespaces.length > 0;
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -123,19 +132,43 @@ export default function Home() {
     if (selectedNamespace && chatList.length > 0 && !selectedChatId) {
       setSelectedChatId(chatList[0].chatId);
     }
-  }, [selectedNamespace, chatList, selectedChatId, setSelectedChatId]);
+  }, [
+    selectedNamespace,
+    chatList,
+    selectedChatId,
+    setSelectedChatId,
+    openAIapiKey,
+    pineconeApiKey,
+    pineconeEnvironment,
+    pineconeIndexName,
+  ]);
 
   useEffect(() => {
     if (chatList.length > 0) {
       setSelectedChatId(chatList[chatList.length - 1].chatId);
     }
-  }, [selectedNamespace, setSelectedChatId, chatList]);
+  }, [
+    selectedNamespace,
+    setSelectedChatId,
+    chatList,
+    openAIapiKey,
+    pineconeApiKey,
+    pineconeEnvironment,
+    pineconeIndexName,
+  ]);
 
   useEffect(() => {
     if (selectedChatId) {
       fetchChatHistory();
     }
-  }, [selectedChatId, fetchChatHistory]);
+  }, [
+    selectedChatId,
+    fetchChatHistory,
+    openAIapiKey,
+    pineconeApiKey,
+    pineconeEnvironment,
+    pineconeIndexName,
+  ]);
 
   useEffect(() => {
     textAreaRef.current?.focus();
@@ -166,11 +199,23 @@ export default function Home() {
     setQuery('');
 
     const conversation = getConversation(selectedChatId);
-
+    if (
+      !openAIapiKey ||
+      !pineconeApiKey ||
+      !pineconeEnvironment ||
+      !pineconeIndexName
+    ) {
+      console.error('API keys not found.');
+      return;
+    }
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-OpenAI-Key': openAIapiKey,
+        'X-Pinecone-Key': pineconeApiKey,
+        'X-Pinecone-Environment': pineconeEnvironment,
+        'X-Pinecone-Index-Name': pineconeIndexName,
       },
       body: JSON.stringify({
         question,
@@ -228,6 +273,8 @@ export default function Home() {
       e.preventDefault();
     }
   };
+
+  const nameSpaceHasChats = filteredChatList.length > 0;
 
   return (
     <>
@@ -337,7 +384,7 @@ export default function Home() {
           <Header setSidebarOpen={setSidebarOpen} />
 
           <main className="flex flex-col">
-            {nameSpaceHasChats && selectedNamespace ? (
+            {selectedNamespace !== '' && nameSpaceHasChats ? (
               <div className="flex-grow pb-36">
                 <div className="h-full">
                   <MessageList

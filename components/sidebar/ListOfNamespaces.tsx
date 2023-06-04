@@ -24,6 +24,8 @@ const ListOfNamespaces = ({
     setSelectedNamespace(namespace);
   };
 
+  console.log(namespaces);
+
   return (
     <Menu as="div" className="w-full relative inline-block text-left">
       <div>
@@ -37,11 +39,14 @@ const ListOfNamespaces = ({
             </span>
           ) : (
             <>
-              {selectedNamespace}
-              <ChevronDownIcon
-                className="-mr-1 h-5 w-5 text-gray-400"
-                aria-hidden="true"
-              />
+              {namespaces.length === 0 ? (
+                <span>No namespaces found</span>
+              ) : (
+                <ChevronDownIcon
+                  className="-mr-1 h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              )}
             </>
           )}
         </Menu.Button>

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { makeChain } from '@/utils/makechain';
-import { pinecone } from '@/utils/pinecone-client';
+import { initPinecone } from '@/utils/pinecone-client';
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,11 +16,18 @@ export default async function handler(
     returnSourceDocuments,
     modelTemperature,
   } = req.body;
-  const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? '';
 
-  const openai_api_key = process.env.OPENAI_API_KEY ?? '';
+  const pineconeApiKey = req.headers['x-api-key'];
+  const targetIndex = req.headers['x-index-name'] as string;
+  const pineconeEnvironment = req.headers['x-environment'];
+  const openAIapiKey = req.headers['x-openai-key'];
 
-  if (!openai_api_key) {
+  const pinecone = await initPinecone(
+    pineconeApiKey as string,
+    pineconeEnvironment as string,
+  );
+
+  if (!openAIapiKey) {
     return res.status(500).json({ error: 'OpenAI API key not set' });
   }
 
@@ -35,11 +42,11 @@ export default async function handler(
 
   const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
   try {
-    const index = pinecone.Index(PINECONE_INDEX_NAME);
+    const index = pinecone.Index(targetIndex as string);
 
     const vectorStore = await PineconeStore.fromExistingIndex(
       new OpenAIEmbeddings({
-        openAIApiKey: openai_api_key,
+        openAIApiKey: openAIapiKey as string,
       }),
       {
         pineconeIndex: index,

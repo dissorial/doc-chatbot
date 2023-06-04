@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useDropzone } from 'react-dropzone';
 import ChunkSizeModal from '@/components/other/ChunkSizeModal';
+import { setItem } from '@/libs/localStorageKeys';
+import useApiKeys from '@/hooks/useKeys';
 import OverlapSizeModal from '@/components/other/OverlapSizeModal';
 import {
   ArrowRightIcon,
@@ -11,15 +13,33 @@ import {
   XMarkIcon,
 } from '@heroicons/react/20/solid';
 import Pattern from './components/Pattern';
+import KeyForm from '@/components/keyform/KeyForm';
+import { set } from 'lodash';
 
 export default function Settings() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const {
+    openAIapiKey,
+    setOpenAIapiKey,
+    pineconeApiKey,
+    setPineconeApiKey,
+    pineconeEnvironment,
+    setPineconeEnvironment,
+    pineconeIndexName,
+    setPineconeIndexName,
+  } = useApiKeys();
+
   const [namespaceName, setNamespaceName] = useState<string>('');
   const [deleteMessage, setDeleteMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [uploadMessage, setUploadMessage] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<{ message: string; customString: string }>(
+    {
+      message: '',
+      customString: '',
+    },
+  );
   const [namespaces, setNamespaces] = useState<string[]>([]);
   const [chunkSize, setChunkSize] = useState<number>(1200);
   const [overlapSize, setOverlapSize] = useState<number>(20);
@@ -31,22 +51,50 @@ export default function Settings() {
 
   const fetchNamespaces = useCallback(async () => {
     try {
-      const response = await fetch(`/api/getNamespaces`);
+      const response = await fetch(`/api/getNamespaces`, {
+        headers: {
+          'X-Api-Key': pineconeApiKey,
+          'X-Index-Name': pineconeIndexName,
+          'X-Environment': pineconeEnvironment,
+        },
+      });
       const data = await response.json();
 
       if (response.ok) {
         setNamespaces(data);
+        setError({
+          customString: '',
+          message: '',
+        });
       } else {
         setError(data.error);
       }
     } catch (error: any) {
-      setError(error.message);
+      setError({
+        message: error.message,
+        customString: 'An error occured while fetching namespaces',
+      });
     }
-  }, []);
+  }, [pineconeApiKey, pineconeIndexName, pineconeEnvironment]);
 
   useEffect(() => {
-    fetchNamespaces();
-  }, [fetchNamespaces]);
+    if (pineconeApiKey) {
+      fetchNamespaces();
+    }
+  }, [fetchNamespaces, pineconeApiKey]);
+
+  const handleSubmit = (storageKey: string, key: string) => {
+    setItem(storageKey, key);
+    if (storageKey === 'openAIapiKey') {
+      setOpenAIapiKey(key);
+    } else if (storageKey === 'pineconeApiKey') {
+      setPineconeApiKey(key);
+    } else if (storageKey === 'pineconeEnvironment') {
+      setPineconeEnvironment(key);
+    } else if (storageKey === 'pineconeIndexName') {
+      setPineconeIndexName(key);
+    }
+  };
 
   const handleDelete = async (namespace: string) => {
     try {
@@ -54,6 +102,11 @@ export default function Settings() {
         `/api/deleteNamespace?namespace=${namespace}`,
         {
           method: 'DELETE',
+          headers: {
+            'X-Api-Key': pineconeApiKey,
+            'X-Index-Name': pineconeIndexName,
+            'X-Environment': pineconeEnvironment,
+          },
         },
       );
 
@@ -67,8 +120,12 @@ export default function Settings() {
         const data = await response.json();
         console.log(data.error);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setError({
+        message: error.message,
+        customString: 'An error occured trying to delete a namespace',
+      });
     }
   };
 
@@ -102,7 +159,10 @@ export default function Settings() {
         setError(errorData.error);
       }
     } catch (error: any) {
-      setError(error.message);
+      setError({
+        message: error.message,
+        customString: 'An error occured trying to upload files',
+      });
     }
   };
 
@@ -114,6 +174,11 @@ export default function Settings() {
         `/api/consume?namespaceName=${namespaceName}&chunkSize=${chunkSize}&overlapSize=${overlapSize}`,
         {
           method: 'POST',
+          headers: {
+            'X-Api-Key': pineconeApiKey,
+            'X-Index-Name': pineconeIndexName,
+            'X-Environment': pineconeEnvironment,
+          },
         },
       );
 
@@ -130,7 +195,10 @@ export default function Settings() {
         setError(errorData.error);
       }
     } catch (error: any) {
-      setError(error.message);
+      setError({
+        message: error.message,
+        customString: 'Error ingesting files',
+      });
     }
 
     setLoading(false);
@@ -141,17 +209,56 @@ export default function Settings() {
         <div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-48">
           <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
             <Pattern />
+            {error && (
+              <div className="mt-4 sm:mt-8 flex justify-center mb-4">
+                <div className="text-red-500 text-sm sm:text-base font-semibold">
+                  {error.customString}
+                </div>
+              </div>
+            )}
             <div className="max-w-xl mx-auto">
-              <div className="flex justify-between items-center align-center mb-2">
+              <div className="gap-4 grid grid-cols1 sm:grid-cols-2 mb-6">
+                <KeyForm
+                  keyName="OpenAI API Key"
+                  keyValue={openAIapiKey}
+                  setKeyValue={(key: string) =>
+                    handleSubmit('openAIapiKey', key)
+                  }
+                />
+                <KeyForm
+                  keyName="Pinecone API Key"
+                  keyValue={pineconeApiKey}
+                  setKeyValue={(key: string) =>
+                    handleSubmit('pineconeApiKey', key)
+                  }
+                />
+                <KeyForm
+                  keyName="Pinecone environment"
+                  keyValue={pineconeEnvironment}
+                  setKeyValue={(key: string) =>
+                    handleSubmit('pineconeEnvironment', key)
+                  }
+                />
+                <KeyForm
+                  keyName="Pinecone index name"
+                  keyValue={pineconeIndexName}
+                  setKeyValue={(key: string) =>
+                    handleSubmit('pineconeIndexName', key)
+                  }
+                />
+              </div>
+
+              <div className="flex justify-between items-center space-x-2 align-center mb-2">
                 {namespaces.length > 0 ? (
                   <h2 className="mb-4 text-xl text-center sm:text-3xl sm:text-left font-bold text-white">
                     Your namespaces
                   </h2>
                 ) : (
                   <span className="inline-flex items-center rounded-md bg-red-400/10 px-2 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-red-400 ring-1 ring-inset ring-red-400/20">
-                    You currently do not have any namespaces
+                    No namespaces found
                   </span>
                 )}
+
                 <button
                   type="button"
                   className="rounded-md items-center align-center justify-between flex bg-white px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-200"
@@ -207,12 +314,6 @@ export default function Settings() {
               {deleteMessage && (
                 <p className="mt-6 text-md font-medium text-green-400 text-center">
                   {deleteMessage}
-                </p>
-              )}
-
-              {error && (
-                <p className="mt-6 text-md font-medium text-red-400 text-center">
-                  {error}
                 </p>
               )}
             </div>

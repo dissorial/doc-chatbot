@@ -35,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
             className="-ml-0.5 h-4 w-4 sm:w-5 sm:h-5"
             aria-hidden="true"
           />
-          Settings
+          <span>Settings</span>
         </button>
       </div>
     </div>

@@ -1,7 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-export default function useNamespaces() {
+interface useNamespacesProps {
+  pineconeApiKey: string;
+  pineconeIndexName: string;
+  pineconeEnvironment: string;
+}
+
+export default function useNamespaces(
+  pineconeApiKey: string,
+  pineconeIndexName: string,
+  pineconeEnvironment: string,
+) {
   const [namespaces, setNamespaces] = useState<string[]>([]);
   const [selectedNamespace, setSelectedNamespace] = useState<string>('');
   const [isLoadingNamespaces, setIsLoadingNamespaces] = useState(true);
@@ -11,14 +21,20 @@ export default function useNamespaces() {
   useEffect(() => {
     const fetchNamespaces = async () => {
       try {
-        const response = await fetch(`/api/getNamespaces`);
+        const response = await fetch(`/api/getNamespaces`, {
+          headers: {
+            'X-Api-Key': pineconeApiKey,
+            'X-Index-Name': pineconeIndexName,
+            'X-Environment': pineconeEnvironment,
+          },
+        });
         const data = await response.json();
 
         if (response.ok) {
           setNamespaces(data);
           setIsLoadingNamespaces(false);
           if (data.length > 0) {
-            setSelectedNamespace(data[0]); // Set the first namespace from the list as the selected one
+            setSelectedNamespace(data[0]);
           }
         } else {
           console.error(data.error);
@@ -29,7 +45,7 @@ export default function useNamespaces() {
     };
 
     fetchNamespaces();
-  }, []);
+  }, [pineconeApiKey, pineconeIndexName, pineconeEnvironment]);
 
   useEffect(() => {
     const namespaceFromUrl = router.query.namespace;

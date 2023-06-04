@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '../buttons/Button';
 import { useRouter } from 'next/router';
 interface EmptyStateProps {
   nameSpaceHasChats: boolean;
@@ -19,7 +18,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
 
   return (
     <div className="flex flex-col justify-center px-4 pt-24">
-      <h1 className="text-xl md:text-3xl text-center font-semibold text-gray-100 mb-4">
+      <h1 className="text-xl md:text-3xl text-center font-semibold text-gray-100 mb-6">
         {!userHasNamespaces
           ? noNamespacesMessage
           : selectedNamespace && !nameSpaceHasChats
@@ -27,12 +26,14 @@ const EmptyState: React.FC<EmptyStateProps> = ({
           : selectNamespaceMessage}
       </h1>
       {!userHasNamespaces && (
-        <div>
-          <Button
-            buttonType="primary"
-            buttonText="Create a namespace"
+        <div className="flex justify-center">
+          <button
+            type="button"
+            className="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             onClick={() => router.push('/settings')}
-          />
+          >
+            Create a namespace
+          </button>
         </div>
       )}
     </div>
