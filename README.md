@@ -16,7 +16,7 @@
 
 `+ LangChain and Pinecone`
 
-Note: If you'd like to set this up with google auth and mongoDB (as opposed to no auth and using local storage), have a look at this branch: [mongodb-and-auth](https://github.com/dissorial/doc-chatbot/tree/mongodb-and-auth)
+Note: If you'd like to set this up with google auth and mongoDB (as opposed to no auth and using local storage), have a look at this branch: [mongodb-and-auth](https://github.com/dissorial/doc-chatbot/tree/mongodb-and-auth). However, that repo is several important commits behind this one and lacks certain features, so keep that in mind.
 
 **Main chat area**
 ![Main chat area](public/images/main.png)
@@ -33,19 +33,31 @@ Note: If you'd like to set this up with google auth and mongoDB (as opposed to n
 
 ---
 
-## Local setup
+## Local setup & development
+
+If you'd like to run this locally and deploy your own version, follow the steps below.
 
 ### Clone the repo
 
 ```
-git clone https://github.com/dissorial/pdf-chatbot.git
+git clone https://github.com/dissorial/doc-chatbot.git
 ```
 
 ---
 
 ### Pinecone setup
 
+#### API key
+
 Create an account on Pinecone. Go to `Indexes` and `Create index`. Enter any name, put `1536` for `Dimensions` and leave the rest on default. Then go to `API keys` and `Create API key`.
+
+#### Index name
+
+Self-explanatory
+
+#### Pinecone environment
+
+Right next to your index name, e.g. `us-west2-rkw`
 
 ---
 
@@ -63,25 +75,28 @@ yarn install
 - Your `.env` file should look like this:
 
 ```
-OPENAI_API_KEY=
-
-PINECONE_API_KEY=
-PINECONE_ENVIRONMENT=
-PINECONE_INDEX_NAME=
-
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=
-
-JWT_SECRET=
-
 NODE_ENV=development
 ```
 
+### Node environment
+
+- Development by default. In production, set this to 'production' (without the quotes)
+
+### Other
+
+- In `utils/makechain.ts`, adjust the `QA_PROMPT` for your own usecase. Change `modelName` in `new OpenAI` to `gpt-4`, if you have access to it.
+
 ---
 
-### OpenAI API
+## Deployment
 
-- Visit [OpenAI](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key) to retrieve API keys and insert into your `.env` file
+Add these to your `.env` file:
+
+```
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=
+JWT_SECRET=
+```
 
 ### NextAuth Secret
 
@@ -95,25 +110,13 @@ NODE_ENV=development
 
 - Default is http://localhost:3000. In production, this should be the URL of your deployed app.
 
-### Node environment
-
-- development by default. In production, set this to 'production' (without the quotes)
-
-### Other
-
-- In `utils/makechain.ts`, adjust the `QA_PROMPT` for your own usecase. Change `modelName` in `new OpenAI` to `gpt-4`, if you have access to `gpt-4` api.
-
 ---
 
 ## Run the app
 
-Run `npm run dev`. Once the local dev environment launches, go to `Settings` in the top right corner. Upload your files and give them a 'namespace'. Here, 'namespace' is synonymous with being the topic of your conversation. This way, you can upload multiple files to multiple namespaces, and maintain several conversations about different topics and documents.
-
----
-
-## Chatting with files
-
-If you retrun to the home page now, you should see your namespace(s) on the left sidebar. Click on it, create a new chat and have a conversation with the files embedded for that particular namespace.
+```
+npm run dev
+```
 
 ---
 
@@ -124,12 +127,9 @@ If you retrun to the home page now, you should see your namespace(s) on the left
 - Make sure that you are running the latest version of Node. To check your version run node -v.
 - If you're encountering issues with a specific file, try converting it to text first or try a different file. It's possible that the file is corrupted, scanned, or requires OCR to be converted to text.
 - Confirm that you're using the same versions of LangChain and Pinecone as this repository.
-- Check that you've created an .env file that contains your valid API keys, environment, and index name.
-- Ensure that you do not have multiple OPENAPI keys in your global environment. If multiple keys exist, the local env file in the project will be overwritten by the system's env variable.
 
 ### Pinecone errors
 
-- Make sure that your Pinecone dashboard environment and index match the values in the .env file.
 - Confirm that you've set the vector dimensions to 1536.
 - Note that Pinecone indexes for users on the Starter (free) plan are deleted after 7 days of inactivity. To prevent this, send an API request to Pinecone to reset the counter before 7 days.
 - If issues persist, consider starting fresh with a new Pinecone project, index, and cloned repository.

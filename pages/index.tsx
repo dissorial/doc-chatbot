@@ -41,8 +41,6 @@ export default function Home() {
     isLoadingNamespaces,
   } = useNamespaces(pineconeApiKey, pineconeIndexName, pineconeEnvironment);
 
-  console.log(selectedNamespace, 'selectedNamespace');
-
   const {
     chatList,
     selectedChatId,
