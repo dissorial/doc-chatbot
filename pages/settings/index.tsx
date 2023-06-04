@@ -203,13 +203,17 @@ export default function Settings() {
 
     setLoading(false);
   };
+
+  const arePineConeKeysSet =
+    pineconeApiKey && pineconeEnvironment && pineconeIndexName;
+
   return (
     <div className="relative isolate min-h-screen bg-gray-900">
       <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
         <div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-48">
           <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
             <Pattern />
-            {error && (
+            {error && arePineConeKeysSet && (
               <div className="mt-4 sm:mt-8 flex justify-center mb-4">
                 <div className="text-red-500 text-sm sm:text-base font-semibold">
                   {error.customString}
