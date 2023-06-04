@@ -29,10 +29,6 @@ Note: If you'd like to set this up with google auth and mongoDB (as opposed to n
 
 ---
 
-## Disclaimer
-
----
-
 ## Local setup & development
 
 If you'd like to run this locally and deploy your own version, follow the steps below.
