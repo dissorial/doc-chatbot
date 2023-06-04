@@ -36,10 +36,12 @@ export const makeChain = (
   vectorstore: PineconeStore,
   returnSourceDocuments: boolean,
   modelTemperature: number,
+  openAIapiKey: string,
 ) => {
   const model = new OpenAI({
     temperature: modelTemperature, // increase temepreature to get more creative answers
     modelName: 'gpt-3.5-turbo', //change this to gpt-4 if you have access
+    openAIApiKey: openAIapiKey,
   });
 
   // Configures the chain to use the QA_PROMPT and CONDENSE_PROMPT prompts and to not return the source documents

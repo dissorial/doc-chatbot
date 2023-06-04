@@ -14,7 +14,6 @@ import {
 } from '@heroicons/react/20/solid';
 import Pattern from './components/Pattern';
 import KeyForm from '@/components/keyform/KeyForm';
-import { set } from 'lodash';
 
 export default function Settings() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -175,7 +174,8 @@ export default function Settings() {
         {
           method: 'POST',
           headers: {
-            'X-Api-Key': pineconeApiKey,
+            'X-OpenAI-Key': openAIapiKey,
+            'X-Pinecone-Key': pineconeApiKey,
             'X-Index-Name': pineconeIndexName,
             'X-Environment': pineconeEnvironment,
           },

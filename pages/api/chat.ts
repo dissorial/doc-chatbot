@@ -17,10 +17,10 @@ export default async function handler(
     modelTemperature,
   } = req.body;
 
-  const pineconeApiKey = req.headers['x-api-key'];
-  const targetIndex = req.headers['x-index-name'] as string;
-  const pineconeEnvironment = req.headers['x-environment'];
   const openAIapiKey = req.headers['x-openai-key'];
+  const pineconeApiKey = req.headers['x-pinecone-key'];
+  const pineconeEnvironment = req.headers['x-pinecone-environment'];
+  const targetIndex = req.headers['x-pinecone-index-name'] as string;
 
   const pinecone = await initPinecone(
     pineconeApiKey as string,
@@ -59,6 +59,7 @@ export default async function handler(
       vectorStore,
       returnSourceDocuments,
       modelTemperature,
+      openAIapiKey as string,
     );
     const response = await chain.call({
       question: sanitizedQuestion,

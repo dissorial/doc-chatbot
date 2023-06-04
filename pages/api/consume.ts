@@ -15,7 +15,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const pineconeApiKey = req.headers['x-api-key'];
+  const openAIapiKey = req.headers['x-openai-key'];
+  const pineconeApiKey = req.headers['x-pinecone-key'];
   const targetIndex = req.headers['x-index-name'] as string;
   const pineconeEnvironment = req.headers['x-environment'];
 
@@ -45,7 +46,9 @@ export default async function handler(
     const docs = await textSplitter.splitDocuments(rawDocs);
 
     // OpenAI embeddings for the document chunks
-    const embeddings = new OpenAIEmbeddings();
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: openAIapiKey as string,
+    });
 
     // Get the Pinecone index with the given name
     const index = pinecone.Index(targetIndex);
