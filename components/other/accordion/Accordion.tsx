@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown } from 'lucide-react';
 
-import { cn } from '@/utils/cn';
+import { classNames } from '@/utils/classNames';
 
 const Accordion = AccordionPrimitive.Root;
 
@@ -12,7 +12,7 @@ const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={cn('border-t border-gray-700', className)}
+    className={classNames('border-t border-gray-700', className)}
     {...props}
   />
 ));
@@ -25,7 +25,7 @@ const AccordionTrigger = React.forwardRef<
   <AccordionPrimitive.Header className="flex">
     <AccordionPrimitive.Trigger
       ref={ref}
-      className={cn(
+      className={classNames(
         'flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline text-gray-800 dark:text-white [&[data-state=open]>svg]:rotate-180',
         className,
       )}
@@ -44,7 +44,7 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className={cn(
+    className={classNames(
       'pt-0 pb-4 text-sm transition-all text-gray-800 dark:text-white',
       className,
     )}

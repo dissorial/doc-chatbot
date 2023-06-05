@@ -1,13 +1,10 @@
 import React from 'react';
 import { Switch } from '@headlessui/react';
+import { classNames } from '@/utils/classNames';
 
 interface SourceDocumentsToggleProps {
   checked: boolean;
   setReturnSourceDocuments: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
 }
 
 const SourceDocumentsToggle: React.FC<SourceDocumentsToggleProps> = ({

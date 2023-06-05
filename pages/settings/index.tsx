@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useDropzone } from 'react-dropzone';
-import ChunkSizeModal from '@/components/other/ChunkSizeModal';
 import { setItem } from '@/libs/localStorageKeys';
-import useApiKeys from '@/hooks/useKeys';
-import OverlapSizeModal from '@/components/other/OverlapSizeModal';
+import { useKeys } from '@/hooks';
+import { OverlapSizeModal, ChunkSizeModal } from '@/components/other';
 import {
   ArrowRightIcon,
   CheckIcon,
@@ -26,7 +25,7 @@ export default function Settings() {
     setPineconeEnvironment,
     pineconeIndexName,
     setPineconeIndexName,
-  } = useApiKeys();
+  } = useKeys();
 
   const [namespaceName, setNamespaceName] = useState<string>('');
   const [deleteMessage, setDeleteMessage] = useState<string>('');

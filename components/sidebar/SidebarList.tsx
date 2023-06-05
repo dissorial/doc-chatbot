@@ -1,10 +1,12 @@
 import React from 'react';
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
-import Button from '../buttons/Button';
-import ListOfChats from './ListOfChats';
-import ListOfNamespaces from './ListOfNamespaces';
-import SourceDocumentsToggle from './SourceDocumentsToggle';
-import ModelTemperature from './ModelTemperature';
+import Button from '@/components/buttons/Button';
+import {
+  ListOfChats,
+  ListOfNamespaces,
+  SourceDocumentsToggle,
+  ModelTemperature,
+} from './components/index';
 
 interface SidebarListProps {
   createChat: () => string;

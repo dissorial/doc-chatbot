@@ -11,7 +11,6 @@ export default async function handler(
   const {
     question,
     history,
-    chatId,
     selectedNamespace,
     returnSourceDocuments,
     modelTemperature,

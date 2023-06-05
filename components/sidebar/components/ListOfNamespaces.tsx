@@ -1,24 +1,21 @@
-import { Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import React from 'react';
-import Link from 'next/link';
-import LoadingDots from '../other/LoadingDots';
+import { LoadingDots } from '@/components/other';
+import { classNames } from '@/utils/classNames';
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
-const ListOfNamespaces = ({
-  namespaces,
-  selectedNamespace,
-  setSelectedNamespace,
-  isLoadingNamespaces,
-}: {
+interface Props {
   namespaces: string[];
   selectedNamespace: string;
   setSelectedNamespace: (namespace: string) => void;
   isLoadingNamespaces: boolean;
+}
+
+const ListOfNamespaces: React.FC<Props> = ({
+  namespaces,
+  selectedNamespace,
+  setSelectedNamespace,
+  isLoadingNamespaces,
 }) => {
   const handleNamespaceClick = (namespace: string) => {
     setSelectedNamespace(namespace);
@@ -67,8 +64,7 @@ const ListOfNamespaces = ({
             <div className="py-1" key={namespace}>
               <Menu.Item>
                 {() => (
-                  <Link
-                    href={`/namespace/${namespace}`}
+                  <p
                     className={classNames(
                       namespace === selectedNamespace
                         ? 'bg-gray-700 text-white'
@@ -78,7 +74,7 @@ const ListOfNamespaces = ({
                     onClick={() => handleNamespaceClick(namespace)}
                   >
                     {namespace}
-                  </Link>
+                  </p>
                 )}
               </Menu.Item>
             </div>

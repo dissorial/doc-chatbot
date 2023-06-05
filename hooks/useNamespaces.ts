@@ -1,17 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-interface useNamespacesProps {
-  pineconeApiKey: string;
-  pineconeIndexName: string;
-  pineconeEnvironment: string;
-}
-
-export default function useNamespaces(
+const useNamespaces = (
   pineconeApiKey: string,
   pineconeIndexName: string,
   pineconeEnvironment: string,
-) {
+) => {
   const [namespaces, setNamespaces] = useState<string[]>([]);
   const [selectedNamespace, setSelectedNamespace] = useState<string>('');
   const [isLoadingNamespaces, setIsLoadingNamespaces] = useState(true);
@@ -60,4 +54,6 @@ export default function useNamespaces(
     setSelectedNamespace,
     isLoadingNamespaces,
   };
-}
+};
+
+export default useNamespaces;

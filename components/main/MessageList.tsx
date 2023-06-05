@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import LoadingDots from '@/components/other/LoadingDots';
+import { LoadingDots } from '@/components/other';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/other/Accordion';
+} from '@/components/other/accordion/Accordion';
 import remarkGfm from 'remark-gfm';
 import { Message } from '@/types';
 

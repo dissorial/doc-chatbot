@@ -1,24 +1,24 @@
-import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import React from 'react';
+import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
+import { classNames } from '@/utils/classNames';
 
-const ListOfChats = ({
-  filteredChatList,
-  selectedChatId,
-  setSelectedChatId,
-  chatNames,
-  updateChatName,
-  deleteChat,
-}: {
+interface Props {
   filteredChatList: string[];
   selectedChatId: string;
   setSelectedChatId: (chatId: string) => void;
   chatNames: { [chatId: string]: string };
   updateChatName: (chatId: string, newChatName: string) => void;
   deleteChat: (chatId: string) => void;
+}
+
+const ListOfChats: React.FC<Props> = ({
+  filteredChatList,
+  selectedChatId,
+  setSelectedChatId,
+  chatNames,
+  updateChatName,
+  deleteChat,
 }) => {
   const handleChatClick = (chatId: string) => {
     setSelectedChatId(chatId);

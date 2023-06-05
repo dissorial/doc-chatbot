@@ -3,7 +3,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useLocalStorage } from '../libs/localStorage';
 
-export function useChats(namespace: string) {
+const useChats = (namespace: string) => {
   const [allConversations, setAllConversations] = useLocalStorage<{
     [key: string]: {
       messages: ConversationMessage[];
@@ -109,4 +109,6 @@ export function useChats(namespace: string) {
     getConversation,
     updateConversation,
   };
-}
+};
+
+export default useChats;

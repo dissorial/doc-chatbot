@@ -12,7 +12,7 @@ interface Keys {
   setPineconeIndexName: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const useApiKeys = (): Keys => {
+const useKeys = (): Keys => {
   const [openAIapiKey, setOpenAIapiKey] = useState<string>('');
   const [pineconeApiKey, setPineconeApiKey] = useState<string>('');
   const [pineconeEnvironment, setPineconeEnvironment] = useState<string>('');
@@ -50,4 +50,4 @@ const useApiKeys = (): Keys => {
   };
 };
 
-export default useApiKeys;
+export default useKeys;

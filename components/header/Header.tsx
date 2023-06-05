@@ -1,7 +1,6 @@
 import React from 'react';
-import { Bars3Icon } from '@heroicons/react/24/outline';
-import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
+import { Bars3Icon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 
 interface HeaderProps {
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;

@@ -5,19 +5,18 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { ConversationMessage } from '@/types/ConversationMessage';
 import { Document } from 'langchain/document';
-import { Message } from '@/types';
-import useNamespaces from '@/hooks/useNamespaces';
-import { useChats } from '@/hooks/useChats';
-import MessageList from '@/components/main/MessageList';
-import ChatForm from '@/components/main/ChatForm';
+
+import { useChats, useNamespaces, useKeys } from '@/hooks';
+
+import { Dialog } from '@headlessui/react';
+import { ConversationMessage, Message } from '@/types';
+
+import { ChatForm, EmptyState, MessageList } from '@/components/main';
 import SidebarList from '@/components/sidebar/SidebarList';
-import EmptyState from '@/components/main/EmptyState';
 import Header from '@/components/header/Header';
-import useApiKeys from '@/hooks/useKeys';
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -32,7 +31,7 @@ export default function Home() {
     pineconeApiKey,
     pineconeEnvironment,
     pineconeIndexName,
-  } = useApiKeys();
+  } = useKeys();
 
   const {
     namespaces,
@@ -78,7 +77,7 @@ export default function Home() {
   ): Message {
     return {
       ...ConversationMessage,
-      sourceDocs: ConversationMessage.sourceDocs?.map((doc) => ({
+      sourceDocs: ConversationMessage.sourceDocs?.map((doc: Document) => ({
         pageContent: doc.pageContent,
         metadata: { source: doc.metadata.source },
       })),
