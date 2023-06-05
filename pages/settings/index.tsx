@@ -71,14 +71,17 @@ export default function Settings() {
         customString: 'An error occured while fetching namespaces',
       });
     }
-  }, [pineconeApiKey, pineconeIndexName, pineconeEnvironment]);
+  }, [pineconeApiKey, pineconeEnvironment, pineconeIndexName]);
 
   useEffect(() => {
     if (submitClicked) {
       fetchNamespaces();
-      setSubmitClicked(false);
     }
   }, [fetchNamespaces, submitClicked]);
+
+  useEffect(() => {
+    setSubmitClicked(false);
+  }, [openAIapiKey, pineconeApiKey, pineconeEnvironment, pineconeIndexName]);
 
   const handleDelete = async (namespace: string) => {
     try {
@@ -246,7 +249,14 @@ export default function Settings() {
                       setSubmitClicked(true);
                     }}
                   >
-                    Submit
+                    {submitClicked ? (
+                      <>
+                        Your keys have been submitted
+                        <CheckIcon className="ml-2 h-4 w-4" />
+                      </>
+                    ) : (
+                      'Submit'
+                    )}
                   </button>
                 )}
               <div className="flex pt-4 border-t border-white justify-between items-center space-x-2 align-center mb-2">
