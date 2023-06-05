@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useDropzone } from 'react-dropzone';
-import { setItem } from '@/libs/localStorageKeys';
 import { useKeys } from '@/hooks';
 import { OverlapSizeModal, ChunkSizeModal } from '@/components/other';
 import {
@@ -18,15 +17,14 @@ export default function Settings() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const {
     openAIapiKey,
-    setOpenAIapiKey,
     pineconeApiKey,
-    setPineconeApiKey,
     pineconeEnvironment,
-    setPineconeEnvironment,
     pineconeIndexName,
-    setPineconeIndexName,
+    handleKeyChange,
+    handleSubmitKeys,
   } = useKeys();
 
+  const [submitClicked, setSubmitClicked] = useState(false);
   const [namespaceName, setNamespaceName] = useState<string>('');
   const [deleteMessage, setDeleteMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -76,23 +74,11 @@ export default function Settings() {
   }, [pineconeApiKey, pineconeIndexName, pineconeEnvironment]);
 
   useEffect(() => {
-    if (pineconeApiKey) {
+    if (submitClicked) {
       fetchNamespaces();
+      setSubmitClicked(false);
     }
-  }, [fetchNamespaces, pineconeApiKey]);
-
-  const handleSubmit = (storageKey: string, key: string) => {
-    setItem(storageKey, key);
-    if (storageKey === 'openAIapiKey') {
-      setOpenAIapiKey(key);
-    } else if (storageKey === 'pineconeApiKey') {
-      setPineconeApiKey(key);
-    } else if (storageKey === 'pineconeEnvironment') {
-      setPineconeEnvironment(key);
-    } else if (storageKey === 'pineconeIndexName') {
-      setPineconeIndexName(key);
-    }
-  };
+  }, [fetchNamespaces, submitClicked]);
 
   const handleDelete = async (namespace: string) => {
     try {
@@ -203,55 +189,67 @@ export default function Settings() {
     setLoading(false);
   };
 
-  const arePineConeKeysSet =
-    pineconeApiKey && pineconeEnvironment && pineconeIndexName;
-
   return (
     <div className="relative isolate min-h-screen bg-gray-900">
       <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
         <div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-48">
           <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
             <Pattern />
-            {error && arePineConeKeysSet && (
+            {error && (
               <div className="mt-4 sm:mt-8 flex justify-center mb-4">
                 <div className="text-red-500 text-sm sm:text-base font-semibold">
                   {error.customString}
                 </div>
               </div>
             )}
+
             <div className="max-w-xl mx-auto">
               <div className="gap-4 grid grid-cols1 sm:grid-cols-2 mb-6">
                 <KeyForm
                   keyName="OpenAI API Key"
                   keyValue={openAIapiKey}
                   setKeyValue={(key: string) =>
-                    handleSubmit('openAIapiKey', key)
+                    handleKeyChange('openAIapiKey', key)
                   }
                 />
                 <KeyForm
                   keyName="Pinecone API Key"
                   keyValue={pineconeApiKey}
                   setKeyValue={(key: string) =>
-                    handleSubmit('pineconeApiKey', key)
+                    handleKeyChange('pineconeApiKey', key)
                   }
                 />
                 <KeyForm
                   keyName="Pinecone environment"
                   keyValue={pineconeEnvironment}
                   setKeyValue={(key: string) =>
-                    handleSubmit('pineconeEnvironment', key)
+                    handleKeyChange('pineconeEnvironment', key)
                   }
                 />
                 <KeyForm
                   keyName="Pinecone index name"
                   keyValue={pineconeIndexName}
                   setKeyValue={(key: string) =>
-                    handleSubmit('pineconeIndexName', key)
+                    handleKeyChange('pineconeIndexName', key)
                   }
                 />
               </div>
-
-              <div className="flex justify-between items-center space-x-2 align-center mb-2">
+              {openAIapiKey &&
+                pineconeApiKey &&
+                pineconeEnvironment &&
+                pineconeIndexName && (
+                  <button
+                    type="button"
+                    className="rounded-md text-white mb-6 mx-auto items-center align-center justify-between flex px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold focus-visible:outline-indigo-500 shadow-sm ring-1 ring-inset bg-indigo-500 hover:bg-indigo-400"
+                    onClick={() => {
+                      handleSubmitKeys();
+                      setSubmitClicked(true);
+                    }}
+                  >
+                    Submit
+                  </button>
+                )}
+              <div className="flex pt-4 border-t border-white justify-between items-center space-x-2 align-center mb-2">
                 {namespaces.length > 0 ? (
                   <h2 className="mb-4 text-xl text-center sm:text-3xl sm:text-left font-bold text-white">
                     Your namespaces

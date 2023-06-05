@@ -1,52 +1,57 @@
-import { useState, useEffect } from 'react';
-import { getItem } from '@/libs/localStorageKeys';
+import { useState } from 'react';
+import { getItem, setItem } from '@/libs/localStorageKeys';
 
 interface Keys {
   openAIapiKey: string;
-  setOpenAIapiKey: React.Dispatch<React.SetStateAction<string>>;
+  setOpenAIapiKey: (key: string) => void;
   pineconeApiKey: string;
-  setPineconeApiKey: React.Dispatch<React.SetStateAction<string>>;
+  setPineconeApiKey: (key: string) => void;
   pineconeEnvironment: string;
-  setPineconeEnvironment: React.Dispatch<React.SetStateAction<string>>;
+  setPineconeEnvironment: (key: string) => void;
   pineconeIndexName: string;
-  setPineconeIndexName: React.Dispatch<React.SetStateAction<string>>;
+  setPineconeIndexName: (key: string) => void;
+  handleKeyChange: (storageKey: string, keyValue: string) => void;
+  handleSubmitKeys: () => void;
 }
 
 const useKeys = (): Keys => {
-  const [openAIapiKey, setOpenAIapiKey] = useState<string>('');
-  const [pineconeApiKey, setPineconeApiKey] = useState<string>('');
-  const [pineconeEnvironment, setPineconeEnvironment] = useState<string>('');
-  const [pineconeIndexName, setPineconeIndexName] = useState<string>('');
+  const [keys, setKeys] = useState({
+    openAIapiKey: getItem('openAIapiKey') || '',
+    pineconeApiKey: getItem('pineconeApiKey') || '',
+    pineconeEnvironment: getItem('pineconeEnvironment') || '',
+    pineconeIndexName: getItem('pineconeIndexName') || '',
+  });
 
-  useEffect(() => {
-    const storedOpenAIKey = getItem('openAIapiKey');
-    const storedPineconeKey = getItem('pineconeApiKey');
-    const storedPineconeEnvironment = getItem('pineconeEnvironment');
-    const storedPineconeIndexName = getItem('pineconeIndexName');
+  const setKey = (keyName: string, keyValue: string) => {
+    setKeys((prev) => ({ ...prev, [keyName]: keyValue }));
+  };
 
-    if (storedOpenAIKey) {
-      setOpenAIapiKey(storedOpenAIKey);
+  const setOpenAIapiKey = (value: string) => setKey('openAIapiKey', value);
+  const setPineconeApiKey = (value: string) => setKey('pineconeApiKey', value);
+  const setPineconeEnvironment = (value: string) =>
+    setKey('pineconeEnvironment', value);
+  const setPineconeIndexName = (value: string) =>
+    setKey('pineconeIndexName', value);
+
+  const handleKeyChange = (storageKey: string, keyValue: string) => {
+    setItem(storageKey, keyValue);
+    setKey(storageKey, keyValue);
+  };
+
+  const handleSubmitKeys = () => {
+    for (const [storageKey, keyValue] of Object.entries(keys)) {
+      handleKeyChange(storageKey, keyValue);
     }
-    if (storedPineconeKey) {
-      setPineconeApiKey(storedPineconeKey);
-    }
-    if (storedPineconeEnvironment) {
-      setPineconeEnvironment(storedPineconeEnvironment);
-    }
-    if (storedPineconeIndexName) {
-      setPineconeIndexName(storedPineconeIndexName);
-    }
-  }, []);
+  };
 
   return {
-    openAIapiKey,
+    ...keys,
     setOpenAIapiKey,
-    pineconeApiKey,
     setPineconeApiKey,
-    pineconeEnvironment,
     setPineconeEnvironment,
-    pineconeIndexName,
     setPineconeIndexName,
+    handleKeyChange,
+    handleSubmitKeys,
   };
 };
 
