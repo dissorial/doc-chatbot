@@ -27,6 +27,7 @@
     "langchain": "0.0.82",
     "lodash": "^4.17.21",
     "lucide-react": "^0.125.0",
+    "mammoth": "^1.6.0",
     "multiparty": "^4.2.3",
     "next": "13.2.3",
     "next-auth": "^4.22.1",
