@@ -32,6 +32,7 @@ export default async function handler(
     const directoryLoader = new DirectoryLoader(filePath, {
       '.pdf': (path) => new PDFLoader(path),
       '.docx': (path) => new DocxLoader(path),
+      '.md': (path) => new TextLoader(path),
       '.txt': (path) => new TextLoader(path),
     });
 
@@ -67,6 +68,7 @@ export default async function handler(
         (file) =>
           file.endsWith('.pdf') ||
           file.endsWith('.docx') ||
+          file.endsWith('.md') ||
           file.endsWith('.txt'),
       );
     filesToDelete.forEach((file) => {
